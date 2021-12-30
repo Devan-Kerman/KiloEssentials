@@ -40,7 +40,8 @@ public abstract class CommandsMixin {
             method = "fillUsableCommands",
             at = @At(
                     value = "INVOKE",
-                    target = "Lcom/mojang/brigadier/tree/CommandNode;canUse(Ljava/lang/Object;)Z"
+                    target = "Lcom/mojang/brigadier/tree/CommandNode;canUse(Ljava/lang/Object;)Z",
+                    remap = false
             )
     )
     private <S> boolean modifySuggestions(CommandNode<S> node, S source) {

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.Map;
 
-@Mixin(CommandNode.class)
+@Mixin(value = CommandNode.class, remap = false)
 public abstract class CommandNodeMixin<S> implements ICommandNode {
 
     @Shadow

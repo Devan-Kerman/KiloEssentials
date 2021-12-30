@@ -146,8 +146,6 @@ public interface UserManager {
 
     void onChangeNickname(User user, String oldNick);
 
-    PunishmentManager getPunishmentManager();
-
     MutedPlayerList getMutedPlayerList();
 
     void onPunishmentPerformed(OnlineUser src, PunishmentEntry entry, Punishment.Type type, @Nullable String expiry, boolean silent);

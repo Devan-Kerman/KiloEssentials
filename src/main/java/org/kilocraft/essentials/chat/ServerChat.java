@@ -100,7 +100,7 @@ public final class ServerChat {
 
         if (CommandUtils.isPlayer(source)) {
             OnlineUser user = KiloEssentials.getUserManager().getOnline(source);
-            if (KiloEssentials.getUserManager().getPunishmentManager().isMuted(user.getUuid())) {
+            if (KiloEssentials.getUserManager().getMutedPlayerList().isMuted(user.asPlayer().getGameProfile())) {
                 user.sendMessage(ServerUserManager.getMuteMessage(user));
                 return;
             }

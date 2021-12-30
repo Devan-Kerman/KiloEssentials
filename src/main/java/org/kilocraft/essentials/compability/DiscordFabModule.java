@@ -8,6 +8,7 @@ import com.github.hansi132.discordfab.discordbot.api.events.AdvancedDiscordAlert
 import com.github.hansi132.discordfab.discordbot.api.events.DiscordMessageEvent;
 import com.github.hansi132.discordfab.discordbot.api.events.MinecraftMessageEvent;
 import com.github.hansi132.discordfab.discordbot.util.MinecraftAvatar;
+import com.mojang.authlib.GameProfile;
 import org.kilocraft.essentials.api.KiloEssentials;
 import org.kilocraft.essentials.api.ModConstants;
 import org.kilocraft.essentials.api.text.ComponentText;
@@ -63,8 +64,8 @@ public class DiscordFabModule {
             ServerChat.Channel.PUBLIC.send(ComponentText.toText(ModConstants.translation("compability.discordfab.chat.public", name, message)), ChatType.CHAT, sender);
             return true;
         } else {
-            // If we return true, discordfab will see this message as handled and won't sent it to minecraft
-            return KiloEssentials.getUserManager().getPunishmentManager().isMuted(sender);
+            // If we return true, discordfab will see this message as handled and won't send it to minecraft
+            return KiloEssentials.getUserManager().getMutedPlayerList().isMuted(new GameProfile(sender, null));
         }
     }
 

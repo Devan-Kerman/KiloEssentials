@@ -57,7 +57,6 @@ public class ServerUserManager implements UserManager, TickListener {
     private static final Pattern DAT_FILE_PATTERN = Pattern.compile(".dat");
     private static final Pattern USER_FILE_NAME = Pattern.compile(StringUtils.UUID_PATTERN + "\\.dat");
     private final UserHandler handler = new UserHandler();
-    private final ServerPunishmentManager punishmentManager = new ServerPunishmentManager();
     private final List<OnlineUser> users = new ArrayList<>();
     private final Map<String, UUID> nicknameToUUID = new HashMap<>();
     private final Map<String, UUID> usernameToUUID = new HashMap<>();
@@ -263,11 +262,6 @@ public class ServerUserManager implements UserManager, TickListener {
     }
 
     @Override
-    public PunishmentManager getPunishmentManager() {
-        return this.punishmentManager;
-    }
-
-    @Override
     public MutedPlayerList getMutedPlayerList() {
         return this.mutedPlayerList;
     }
@@ -446,7 +440,7 @@ public class ServerUserManager implements UserManager, TickListener {
 
     public void onChatMessage(ServerPlayer player, TextFilter.FilteredText textStream) {
         OnlineUser user = this.getOnline(player);
-        if (this.punishmentManager.isMuted(user.getUuid())) {
+        if (this.mutedPlayerList.isMuted(user.asPlayer().getGameProfile())) {
             user.sendMessage(getMuteMessage(user));
         } else {
             ServerChat.sendChatMessage(user, Format.validatePermission(user, textStream.getRaw(), EssentialPermission.PERMISSION_PREFIX + "chat.formatting"), user.getPreference(Preferences.CHAT_CHANNEL));
