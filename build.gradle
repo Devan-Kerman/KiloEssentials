@@ -31,10 +31,7 @@ repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
     maven { url 'https://repo.spongepowered.org/maven' }
-    maven {
-        name = 'sonatype-oss'
-        url = 'https://oss.sonatype.org/content/repositories/snapshots/'
-    }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     maven { url 'https://raw.githubusercontent.com/Devan-Kerman/Devan-Repo/master/' }
     // Add repositories to retrieve artifacts from in here.
     // You should only use this when depending on other mods because
@@ -48,7 +45,7 @@ loom {
 }
 
 shadowJar {
-    classifier = "shadow"
+    classifier "shadow"
     configurations = [project.configurations.shadow]
 }
 

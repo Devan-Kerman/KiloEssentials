@@ -5,7 +5,6 @@ import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.luckperms.api.LuckPermsProvider;
 import net.minecraft.commands.CommandSourceStack;
@@ -151,7 +150,6 @@ public class KiloEssentials {
         ServerEvents.SAVE.register(s -> this.onSave());
         NbtCommands.registerEvents();
         EntityCommands.registerEvents();
-        DiscordFabModule.registerEvents();
     }
 
     public boolean hasLuckPerms() {

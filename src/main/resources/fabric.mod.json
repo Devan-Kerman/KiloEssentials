@@ -22,6 +22,9 @@
   "entrypoints": {
     "server": [
       "org.kilocraft.essentials.KiloEssentialsMod"
+    ],
+    "discordfab": [
+      "org.kilocraft.essentials.compability.DiscordFabModule"
     ]
   },
   "mixins": [

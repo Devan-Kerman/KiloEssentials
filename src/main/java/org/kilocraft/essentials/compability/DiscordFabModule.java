@@ -1,8 +1,8 @@
 package org.kilocraft.essentials.compability;
 
-import com.github.hansi132.discordfab.discordbot.ChatSynchronizer;
 import com.github.hansi132.discordfab.discordbot.DiscordFab;
 import com.github.hansi132.discordfab.discordbot.DiscordFabMod;
+import com.github.hansi132.discordfab.discordbot.api.DiscordFabAPI;
 import com.github.hansi132.discordfab.discordbot.api.Field;
 import com.github.hansi132.discordfab.discordbot.api.events.AdvancedDiscordAlertEvent;
 import com.github.hansi132.discordfab.discordbot.api.events.DiscordMessageEvent;
@@ -26,35 +26,11 @@ import java.util.List;
 import java.util.UUID;
 import net.minecraft.network.chat.ChatType;
 
-public class DiscordFabModule {
+public class DiscordFabModule implements DiscordFabAPI {
 
     private static final String STAFF_REPORTS_CHANNEL_ID = "staff_reports";
     private static final String STAFF_FLAGGED_MESSAGES = "staff_flagged";
     private static final String STAFF_CHANNEL_ID = "staff";
-
-    public static boolean isLoaded() {
-        try {
-            return DiscordFab.getInstance() != null;
-        } catch (NoClassDefFoundError | RuntimeException e) {
-            return false;
-        }
-    }
-
-    public static void registerEvents() {
-        PunishEvents.BAN.register((source, victim, reason, ipBan, expiry, silent) -> {
-            String title = (expiry > 0 ? "Temporary" : "Permanent") + " " + (ipBan ? "IpBan" : "Ban");
-            sendStaffReport(title, source, victim, reason, expiry, Color.RED);
-        });
-        PunishEvents.MUTE.register((source, victim, reason, expiry, silent) -> {
-            String title = (expiry > 0 ? "Temporary" : "Permanent") + " Mute";
-            sendStaffReport(title, source, victim, reason, expiry, Color.YELLOW);
-        });
-        ChatEvents.FLAGGED_MESSAGE.register(DiscordFabModule::sendFlaggedMessageReport);
-        ChatEvents.CHAT_MESSAGE.register((player, message, channel) -> {
-            if (isLoaded()) MinecraftMessageEvent.EVENT.invoker().onMessage(channel.getId(), player.getUUID(), message);
-        });
-        if (isLoaded()) DiscordMessageEvent.EVENT.register(DiscordFabModule::handleDiscordMessage);
-    }
 
     private static boolean handleDiscordMessage(String minecraftChannelId, String name, UUID sender, String message) {
         if (minecraftChannelId.equals(STAFF_CHANNEL_ID)) {
@@ -70,7 +46,6 @@ public class DiscordFabModule {
     }
 
     private static void sendStaffReport(String title, CommandSourceUser source, EntityIdentifiable victim, String reason, long expiry, Color color) {
-        if (!isLoaded()) return;
         String thumbnailUrl = MinecraftAvatar.generateUrl(
                 victim.getId(),
                 MinecraftAvatar.RenderType.BODY,
@@ -86,15 +61,15 @@ public class DiscordFabModule {
         Field nameField = new Field("Name:", victim.getName());
         Field uuidField = new Field("UUID:", victim.getId().toString());
         final UUID uuid = source.getUuid();
-        AdvancedDiscordAlertEvent.EVENT.invoker().onAlert(STAFF_REPORTS_CHANNEL_ID, title, null, source.getName(), uuid != null ? ChatSynchronizer.getMCAvatarURL(uuid) : null, thumbnailUrl, color, reasonField, timeField, expiryField, nameField, uuidField);
+        AdvancedDiscordAlertEvent.EVENT.invoker().onAlert(STAFF_REPORTS_CHANNEL_ID, title, null, source.getName(), uuid != null ? DiscordFab.getInstance().getChatSynchronizer().getMCAvatarURL(uuid) : null, thumbnailUrl, color, reasonField, timeField, expiryField, nameField, uuidField);
     }
 
     private static void sendFlaggedMessageReport(OnlineUser sender, final String input, final List<String> flagged) {
-        if (!isLoaded() || flagged.isEmpty()) return;
+        if (flagged.isEmpty()) return;
 
         Field messageField = new Field("Message:", input);
         Field flaggedField = new Field("Flagged:", getFlaggedMessage(flagged));
-        AdvancedDiscordAlertEvent.EVENT.invoker().onAlert(STAFF_FLAGGED_MESSAGES, "Flagged Message", null, sender.getName(), ChatSynchronizer.getMCAvatarURL(sender.getUuid()), null, Color.ORANGE, messageField, flaggedField);
+        AdvancedDiscordAlertEvent.EVENT.invoker().onAlert(STAFF_FLAGGED_MESSAGES, "Flagged Message", null, sender.getName(), DiscordFab.getInstance().getChatSynchronizer().getMCAvatarURL(sender.getUuid()), null, Color.ORANGE, messageField, flaggedField);
     }
 
     private static String getFlaggedMessage(final List<String> flagged) {
@@ -106,4 +81,20 @@ public class DiscordFabModule {
         }
     }
 
+    @Override
+    public void onInitialize(DiscordFab discordFab) {
+        PunishEvents.BAN.register((source, victim, reason, ipBan, expiry, silent) -> {
+            String title = (expiry > 0 ? "Temporary" : "Permanent") + " " + (ipBan ? "IpBan" : "Ban");
+            sendStaffReport(title, source, victim, reason, expiry, Color.RED);
+        });
+        PunishEvents.MUTE.register((source, victim, reason, expiry, silent) -> {
+            String title = (expiry > 0 ? "Temporary" : "Permanent") + " Mute";
+            sendStaffReport(title, source, victim, reason, expiry, Color.YELLOW);
+        });
+        ChatEvents.FLAGGED_MESSAGE.register(DiscordFabModule::sendFlaggedMessageReport);
+        ChatEvents.CHAT_MESSAGE.register((player, message, channel) -> {
+            MinecraftMessageEvent.EVENT.invoker().onMessage(channel.getId(), player.getUUID(), message);
+        });
+        DiscordMessageEvent.EVENT.register(DiscordFabModule::handleDiscordMessage);
+    }
 }
