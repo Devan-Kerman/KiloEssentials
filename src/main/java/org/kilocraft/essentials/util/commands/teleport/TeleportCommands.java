@@ -115,7 +115,7 @@ public class TeleportCommands {
     }
 
     private static int teleportIn(CommandContext<CommandSourceStack> ctx, ServerPlayer target) throws CommandSyntaxException {
-        ServerLevel targetWorld = KiloEssentials.getMinecraftServer().getLevel(RegistryUtils.toWorldKey(DimensionArgument.getDimension(ctx, "dimension").dimensionType()));
+        ServerLevel targetWorld = KiloEssentials.getMinecraftServer().getLevel(DimensionArgument.getDimension(ctx, "dimension").dimension());
         Vec3 vec = getVec3(ctx, "pos");
 
         KiloEssentials.getUserManager().getOnline(target).saveLocation();

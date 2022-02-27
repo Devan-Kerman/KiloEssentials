@@ -12,7 +12,6 @@ import org.kilocraft.essentials.api.user.OnlineUser;
 import org.kilocraft.essentials.api.util.StringUtils;
 import org.kilocraft.essentials.util.CommandPermission;
 import org.kilocraft.essentials.util.commands.KiloCommands;
-import org.kilocraft.essentials.util.registry.RegistryUtils;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -71,8 +70,8 @@ public class ArgumentSuggestions {
 
     public static CompletableFuture<Suggestions> dimensions(final CommandContext<CommandSourceStack> context, final SuggestionsBuilder builder) {
         final List<String> dims = new ArrayList<>();
-        for (ResourceKey<Level> worldRegistryKey : RegistryUtils.getWorldsKeySet()) {
-            dims.add(worldRegistryKey.location().getPath());
+        for (ResourceKey<Level> levelKey : KiloEssentials.getMinecraftServer().levelKeys()) {
+            dims.add(levelKey.location().getPath());
         }
         return SharedSuggestionProvider.suggest(dims.stream(), builder);
     }

@@ -15,7 +15,8 @@ public abstract class AgeableMobMixin {
     @ModifyVariable(
             method = "finalizeSpawn",
             at = @At("HEAD"),
-            index = 4
+            index = 4,
+            argsOnly = true
     )
     private SpawnGroupData init(SpawnGroupData entityData) {
         if (!(entityData instanceof AgeableMob.AgeableMobGroupData)) {

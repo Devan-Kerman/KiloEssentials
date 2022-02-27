@@ -67,6 +67,7 @@ public class ServerUserManager implements UserManager, TickListener {
 
     public ServerUserManager() {
         PlayerEvents.DEATH.register(player -> this.onDeath(this.getOnline(player)));
+        PlayerEvents.PLAYER_READY.register((connection, player) -> this.onReady(player));
     }
 
     @Override
@@ -696,13 +697,13 @@ public class ServerUserManager implements UserManager, TickListener {
         MutedPlayerEntry entry = KiloEssentials.getUserManager().getMutedPlayerList().get(user.asPlayer().getGameProfile());
         assert entry != null;
 
-        if (entry.getExpiryDate() == null) {
+        if (entry.getExpires() == null) {
             return KiloConfig.main().moderation().messages().mute
                     .replace("{MUTE_REASON}", entry.getReason() == null ? KiloConfig.main().moderation().defaults().mute : entry.getReason());
         } else {
             return KiloConfig.main().moderation().messages().tempMute
                     .replace("{MUTE_REASON}", entry.getReason() == null ? KiloConfig.main().moderation().defaults().mute : entry.getReason())
-                    .replace("{MUTE_LEFT}", TimeDifferenceUtil.formatDateDiff(new Date(), entry.getExpiryDate()));
+                    .replace("{MUTE_LEFT}", TimeDifferenceUtil.formatDateDiff(new Date(), entry.getExpires()));
         }
     }
 

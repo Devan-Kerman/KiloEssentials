@@ -80,7 +80,7 @@ public class StatusCommand extends EssentialCommand {
                 for (Map.Entry<ServerPlayer, Integer> entry : nearbyEntities.entrySet()) {
                     hover.append(ComponentText.of(entry.getKey().getScoreboardName() + ": ").color(NamedTextColor.GRAY)).append(Component.text(entry.getValue() + "\n").color(NamedTextColor.LIGHT_PURPLE));
                 }
-                builder.append(ComponentText.of("\n&7* " + RegistryUtils.dimensionToName(world.dimensionType()) + "&8: "));
+                builder.append(ComponentText.of("\n&7* " + RegistryUtils.dimensionToName(world.dimension()) + "&8: "));
                 builder.append(ComponentText.of(String.format(worldInfoLoaded, world.getChunkSource().getTickingGenerated(), world.getChunkSource().getLoadedChunksCount(), world.players().size(), entities)).hoverEvent(HoverEvent.showText(hover.build())));
             }
         }

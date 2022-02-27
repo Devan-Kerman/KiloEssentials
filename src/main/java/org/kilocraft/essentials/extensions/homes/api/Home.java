@@ -1,17 +1,12 @@
 package org.kilocraft.essentials.extensions.homes.api;
 
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.nbt.CompoundTag;
 import org.kilocraft.essentials.api.user.OnlineUser;
 import org.kilocraft.essentials.api.world.location.Location;
 import org.kilocraft.essentials.api.world.location.Vec3dLocation;
 import org.kilocraft.essentials.util.LocationUtil;
-import org.kilocraft.essentials.util.registry.RegistryUtils;
 
 import java.util.UUID;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.phys.Vec3;
 
 public class Home {
     private UUID owner_uuid;
@@ -27,33 +22,19 @@ public class Home {
     public Home() {
     }
 
-    public Home(CompoundTag NbtCompound) {
-        this.fromTag(NbtCompound);
+    public Home(CompoundTag tag) {
+        this.fromTag(tag);
     }
 
     public CompoundTag toTag() {
-        CompoundTag NbtCompound = new CompoundTag();
-        NbtCompound.put("loc", this.location.toTag());
-
-        return NbtCompound;
+        CompoundTag tag = new CompoundTag();
+        tag.put("loc", this.location.toTag());
+        return tag;
     }
 
-    public void fromTag(CompoundTag NbtCompound) {
-        if (this.location == null)
-            this.location = Vec3dLocation.dummy();
-
-        if (NbtCompound.contains("pos")) { // Old format
-            this.location.setDimension(new ResourceLocation(NbtCompound.getString("dimension")));
-
-            CompoundTag pos = NbtCompound.getCompound("pos");
-            ((Vec3dLocation) this.location).setVector(new Vec3(pos.getDouble("x"), pos.getDouble("y"), pos.getDouble("z")));
-
-            CompoundTag dir = NbtCompound.getCompound("dir");
-            this.location.setRotation(dir.getFloat("dY"), dir.getFloat("dX"));
-            return;
-        }
-
-        this.location.fromTag(NbtCompound.getCompound("loc"));
+    public void fromTag(CompoundTag tag) {
+        if (this.location == null) this.location = Vec3dLocation.dummy();
+        this.location.fromTag(tag.getCompound("loc"));
     }
 
     public UUID getOwner() {
@@ -77,15 +58,12 @@ public class Home {
     }
 
     public void teleportTo(OnlineUser user) {
-        ServerPlayer player = user.asPlayer();
         user.saveLocation();
-        Location loc = this.getLocation();
-        player.teleportTo(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ(),
-                loc.getRotation().getYaw(), loc.getRotation().getPitch());
+        user.teleport(this.location, true);
     }
 
     public boolean shouldTeleport() {
-        return LocationUtil.shouldBlockAccessTo(this.location.getDimensionType());
+        return LocationUtil.shouldBlockAccessTo(this.location.getDimension());
     }
 
 }

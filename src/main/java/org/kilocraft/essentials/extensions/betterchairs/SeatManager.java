@@ -146,7 +146,7 @@ public class SeatManager implements ConfigurableFeature, TickListener {
         }
 
         Vec3dLocation vec3dLoc = Vec3dLocation.of(pos.getX(), pos.getY() + 1, pos.getZ(),
-                player.getYRot(), player.getXRot(), RegistryUtils.toIdentifier(world.dimensionType()));
+                player.getYRot(), player.getXRot(), world.dimension());
 
         if (state.getBlock() instanceof StairBlock && state.getValue(BlockStateProperties.HALF) == Half.BOTTOM) {
             vec3dLoc.setY(vec3dLoc.getY() - 0.40D);

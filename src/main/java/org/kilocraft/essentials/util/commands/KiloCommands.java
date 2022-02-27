@@ -239,21 +239,16 @@ public class KiloCommands {
     }
 
     public static boolean isCommandDisabled(CommandSourceStack src, String command) {
-        try {
-            if (KiloEssentials.hasPermissionNode(src, EssentialPermission.COMMANDS_BYPASS_WORLD)) return false;
-            final DimensionType dimensionType = src.getPlayerOrException().getLevel().dimensionType();
-            final ResourceLocation identifier = RegistryUtils.toIdentifier(dimensionType);
-            final List<String> disabledCommands = KiloConfig.main().world().disabledCommands.get(identifier.toString());
-            if (disabledCommands != null) {
-                for (String disabledCommand : disabledCommands) {
-                    if (command.startsWith(disabledCommand)) {
-                        src.sendFailure(StringText.of("general.dimension_command_disabled", command, identifier.getPath()));
-                        return true;
-                    }
+        if (KiloEssentials.hasPermissionNode(src, EssentialPermission.COMMANDS_BYPASS_WORLD)) return false;
+        ResourceLocation identifier = src.getLevel().dimension().location();
+        final List<String> disabledCommands = KiloConfig.main().world().disabledCommands.get(identifier.toString());
+        if (disabledCommands != null) {
+            for (String disabledCommand : disabledCommands) {
+                if (command.startsWith(disabledCommand)) {
+                    src.sendFailure(StringText.of("general.dimension_command_disabled", command, identifier.getPath()));
+                    return true;
                 }
             }
-        } catch (CommandSyntaxException noPlayer) {
-            return false;
         }
         return false;
     }

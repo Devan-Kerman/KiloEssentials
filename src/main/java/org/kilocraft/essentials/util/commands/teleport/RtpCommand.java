@@ -71,7 +71,7 @@ public class RtpCommand extends EssentialCommand {
         }
 
         // Check if the target is in the correct dimension or has permission to perform the command in other dimensions
-        if (RegistryUtils.dimensionTypeToRegistryKey(targetWorld.dimensionType()) != Level.OVERWORLD && !PERMISSION_CHECK_OTHER_DIMENSIONS.test(src)) {
+        if (targetWorld.dimension() != Level.OVERWORLD && !PERMISSION_CHECK_OTHER_DIMENSIONS.test(src)) {
             targetUser.sendLangMessage("command.rtp.dimension_exception");
             return;
         }
@@ -108,7 +108,7 @@ public class RtpCommand extends EssentialCommand {
             int z = random.nextInt(config.max - config.min) + config.min * (random.nextBoolean() ? 1 : -1);
             z += config.centerZ;
             pos = new BlockPos(x, 64, z);
-            Biome biome = world.getBiome(pos);
+            Biome biome = world.getBiome(pos).value();
             final ResourceLocation identifier = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome);
             assert identifier != null;
             boolean invalidBiome = false;
@@ -144,10 +144,10 @@ public class RtpCommand extends EssentialCommand {
                         if (!PERMISSION_CHECK_IGNORE_LIMIT.test(src)) {
                             targetUser.getPreferences().set(RTP_LEFT, targetUser.getPreference(RTP_LEFT) - 1);
                         }
-                        Biome biome = world.getBiome(pos);
+                        Biome biome = world.getBiome(pos).value();
                         final ResourceLocation identifier = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome);
                         assert identifier != null;
-                        targetUser.sendLangMessage("command.rtp.success", identifier.getPath(), pos.getX(), pos.getY(), pos.getZ(), RegistryUtils.dimensionToName(world.dimensionType()));
+                        targetUser.sendLangMessage("command.rtp.success", identifier.getPath(), pos.getX(), pos.getY(), pos.getZ(), RegistryUtils.dimensionToName(world.dimension()));
                     }
                 } catch (InsecureDestinationException e) {
                     targetUser.sendLangMessage("command.rtp.failed.unsafe");

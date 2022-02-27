@@ -400,7 +400,7 @@ public class PlayerWarpCommand extends EssentialCommand {
         Texter.InfoBlockStyle text = Texter.InfoBlockStyle.of("Player Warp: " + warp.getName());
         text.append("Owner", owner.getNameTag()).append(" ");
         text.append("Type", warp.getType()).append(" ");
-        text.append("World", RegistryUtils.dimensionToName(owner.getLocation().getDimensionType()));
+        text.append("World", RegistryUtils.dimensionToName(warp.getLocation().getDimension()));
 
         src.sendMessage(text.build());
     }
@@ -414,7 +414,7 @@ public class PlayerWarpCommand extends EssentialCommand {
 
         for (int i = 0; i < warps.size(); i++) {
             PlayerWarp warp = warps.get(i);
-            input.append(String.format(LINE_FORMAT, i + 1, warp.getName(), warp.getType(), RegistryUtils.dimensionToName(warp.getLocation().getDimensionType())));
+            input.append(String.format(LINE_FORMAT, i + 1, warp.getName(), warp.getType(), RegistryUtils.dimensionToName(warp.getLocation().getDimension())));
         }
 
         ListedText.Page paged = ListedText.getPageFromStrings(ListedText.Options.builder().setPageIndex(page - 1).build(), input.getLines());

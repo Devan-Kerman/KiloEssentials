@@ -1,10 +1,12 @@
 package org.kilocraft.essentials.util;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -23,9 +25,9 @@ import org.kilocraft.essentials.util.registry.RegistryUtils;
 
 public class LocationUtil {
 
-    public static boolean shouldBlockAccessTo(DimensionType type) {
-        return KiloConfig.main().world().disabledDimensions.contains(RegistryUtils.toIdentifier(type).toString()) ||
-                KiloConfig.main().world().disabledDimensions.contains(RegistryUtils.toIdentifier(type).getPath());
+    public static boolean shouldBlockAccessTo(ResourceKey<Level> key) {
+        return KiloConfig.main().world().disabledDimensions.contains(key.location().toString()) ||
+                KiloConfig.main().world().disabledDimensions.contains(key.location().getPath());
     }
 
     public static boolean isBlockSafeFor(OnlineUser user, final Location loc) {
@@ -61,7 +63,7 @@ public class LocationUtil {
         BlockState state;
         int tries = 0;
         boolean hasAirSpace;
-        boolean isNether = RegistryUtils.isNether(loc.getDimensionType());
+        boolean isNether = loc.getDimension() != Level.NETHER;
         boolean safe;
 
         do {
@@ -70,7 +72,8 @@ public class LocationUtil {
             pos = vector.toPos();
             state = world.getBlockState(pos);
             Material material = state.getMaterial();
-            Biome.BiomeCategory category = world.getBiome(pos).getBiomeCategory();
+
+            Biome.BiomeCategory category = Biome.getBiomeCategory(world.getBiome(pos));
 
             if (!LocationUtil.hasSolidGround(vector)) {
                 safe = false;
@@ -105,9 +108,9 @@ public class LocationUtil {
     public static void processDimension(ServerPlayer player) {
         boolean kickFromDim = KiloConfig.main().world().kickFromDimension;
 
-        if (kickFromDim && LocationUtil.shouldBlockAccessTo(player.getLevel().dimensionType()) && player.getServer() != null) {
+        if (kickFromDim && LocationUtil.shouldBlockAccessTo(player.getLevel().dimension()) && player.getServer() != null) {
             BlockPos pos = player.getRespawnPosition();
-            DimensionType dim = RegistryUtils.toDimension(player.getRespawnDimension());
+            ServerLevel level = KiloEssentials.getMinecraftServer().getLevel(player.getRespawnDimension());
 
             if (pos == null) {
                 OnlineUser user = KiloEssentials.getUserManager().getOnline(player);
@@ -115,16 +118,16 @@ public class LocationUtil {
                     pos = user.getLastSavedLocation().toPos();
                     if (pos == null) {
                         UserHomeHandler homeHandler = user.getHomesHandler();
-                        if (homeHandler != null && homeHandler.getHomes().get(0) != null && homeHandler.getHomes().get(0).getLocation().getDimensionType() != player.getLevel().dimensionType()) {
+                        if (homeHandler != null && homeHandler.getHomes().get(0) != null && homeHandler.getHomes().get(0).getLocation().getDimension() != player.getLevel().dimension()) {
                             pos = user.getHomesHandler().getHomes().get(0).getLocation().toPos();
                         }
                     }
                 }
             }
 
-            if (pos != null) {
-                KiloEssentials.getUserManager().getOnline(player).sendLangMessage("general.dimension_not_allowed", RegistryUtils.dimensionToName(player.getLevel().dimensionType()));
-                player.teleportTo(RegistryUtils.toServerWorld(dim), pos.getX(), pos.getY(), pos.getZ(), player.getYRot(), player.getXRot());
+            if (level != null && pos != null) {
+                KiloEssentials.getUserManager().getOnline(player).sendLangMessage("general.dimension_not_allowed", RegistryUtils.dimensionToName(player.getLevel().dimension()));
+                player.teleportTo(level, pos.getX(), pos.getY(), pos.getZ(), player.getYRot(), player.getXRot());
             }
         }
     }

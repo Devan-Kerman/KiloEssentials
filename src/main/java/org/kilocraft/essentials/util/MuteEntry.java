@@ -13,14 +13,14 @@ public abstract class MuteEntry<T> extends StoredUserEntry<T> {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
     protected final Date creationDate;
     protected final String source;
-    protected final Date expiryDate;
+    protected final Date expires;
     protected final String reason;
 
     public MuteEntry(T object, @Nullable Date creationDate, @Nullable String source, @Nullable Date expiryDate, @Nullable String reason) {
         super(object);
         this.creationDate = creationDate;
         this.source = source;
-        this.expiryDate = expiryDate;
+        this.expires = expiryDate;
         this.reason = reason == null ? "Muted by an operator." : reason;
     }
 
@@ -40,7 +40,7 @@ public abstract class MuteEntry<T> extends StoredUserEntry<T> {
             expiry = new Date();
         }
 
-        this.expiryDate = expiry;
+        this.expires = expiry;
         this.creationDate = created;
         this.source = jsonObject.has("source") ? jsonObject.get("source").getAsString() : "(Unknown)";
         this.reason = jsonObject.has("reason") ? jsonObject.get("reason").getAsString() : null;
@@ -50,8 +50,8 @@ public abstract class MuteEntry<T> extends StoredUserEntry<T> {
         return this.source;
     }
 
-    public Date getExpiryDate() {
-        return this.expiryDate;
+    public Date getExpires() {
+        return this.expires;
     }
 
     public String getReason() {
@@ -60,15 +60,20 @@ public abstract class MuteEntry<T> extends StoredUserEntry<T> {
 
     public abstract Component toText();
 
-    boolean hasExpired() {
-        return this.expiryDate != null && this.expiryDate.before(new Date());
+    public boolean hasExpired() {
+        System.out.println("hasExpired: " + this.expires);
+        if (this.expires == null) {
+            return false;
+        }
+        System.out.println("hasExpired2: " + this.expires.before(new Date()));
+        return this.expires.before(new Date());
     }
 
     @Override
     protected void serialize(JsonObject jsonObject) {
         jsonObject.addProperty("created", DATE_FORMAT.format(this.creationDate));
         jsonObject.addProperty("source", this.source);
-        jsonObject.addProperty("expires", this.expiryDate == null ? "forever" : DATE_FORMAT.format(this.expiryDate));
+        jsonObject.addProperty("expires", this.expires == null ? "forever" : DATE_FORMAT.format(this.expires));
         jsonObject.addProperty("reason", this.reason);
     }
 }

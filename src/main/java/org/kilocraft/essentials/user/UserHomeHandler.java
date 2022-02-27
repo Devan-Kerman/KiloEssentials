@@ -133,9 +133,8 @@ public class UserHomeHandler implements ConfigurableFeature {
     public void teleportToHome(OnlineUser user, Home home) throws UnsafeHomeException {
         if (home == null) throw new UnsafeHomeException(null, Reason.NO_HOME);
         if (user.isOnline()) {
-            ServerLevel world = KiloEssentials.getMinecraftServer().getLevel(RegistryUtils.dimensionTypeToRegistryKey(home.getLocation().getDimensionType()));
 
-            if (world == null) {
+            if (home.getLocation().getWorld() == null) {
                 throw new UnsafeHomeException(home, Reason.MISSING_DIMENSION);
             }
 
@@ -151,7 +150,7 @@ public class UserHomeHandler implements ConfigurableFeature {
     public void prepareHomeLocation(OnlineUser user, Home home) {
         if (home == null) return;
         if (user.isOnline()) {
-            ServerLevel world = KiloEssentials.getMinecraftServer().getLevel(RegistryUtils.dimensionTypeToRegistryKey(home.getLocation().getDimensionType()));
+            ServerLevel world = home.getLocation().getWorld();
 
             if (world == null) {
                 return;

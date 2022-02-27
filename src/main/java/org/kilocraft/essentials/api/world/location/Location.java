@@ -3,10 +3,12 @@ package org.kilocraft.essentials.api.world.location;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 import org.kilocraft.essentials.api.text.ComponentText;
@@ -21,7 +23,7 @@ public interface Location {
 
     double getZ();
 
-    ResourceLocation getDimension();
+    ResourceKey<Level> getDimension();
 
     DimensionType getDimensionType();
 
@@ -47,9 +49,7 @@ public interface Location {
 
     void setRotation(float yaw, float pitch);
 
-    void setDimension(ResourceLocation dimension);
-
-    void setDimension(DimensionType type);
+    void setDimension(ResourceKey<Level> dimension);
 
     ChunkPos toChunkPos();
 
@@ -83,7 +83,7 @@ public interface Location {
         StringBuilder builder = new StringBuilder("&d");
 
         if (this.getWorld() != null) {
-            builder.append(RegistryUtils.dimensionToName(this.getWorld().dimensionType()));
+            builder.append(RegistryUtils.dimensionToName(this.getWorld().dimension()));
         }
 
         builder.append("&8/&e").append(Math.round(this.getX())).append(", ").append(Math.round(this.getY())).append(", ").append(Math.round(this.getZ()));

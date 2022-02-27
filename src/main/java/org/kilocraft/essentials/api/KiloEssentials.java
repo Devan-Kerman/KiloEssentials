@@ -18,7 +18,6 @@ import org.kilocraft.essentials.api.util.EntityCommands;
 import org.kilocraft.essentials.api.util.TickManager;
 import org.kilocraft.essentials.api.util.tablist.LuckpermsTabListData;
 import org.kilocraft.essentials.api.util.tablist.TabListData;
-import org.kilocraft.essentials.compability.DiscordFabModule;
 import org.kilocraft.essentials.config.KiloConfig;
 import org.kilocraft.essentials.events.ServerEvents;
 import org.kilocraft.essentials.extensions.betterchairs.SeatManager;
@@ -169,10 +168,6 @@ public class KiloEssentials {
 
     private void onLeave(ServerPlayer player) {
         this.tabListData.onLeave(player);
-    }
-
-    private void onReady(ServerPlayer player) {
-        this.userManager.onReady(player);
     }
 
     private void load() {

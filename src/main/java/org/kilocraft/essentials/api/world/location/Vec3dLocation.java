@@ -1,5 +1,10 @@
 package org.kilocraft.essentials.api.world.location;
 
+import com.mojang.logging.LogUtils;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import org.kilocraft.essentials.api.KiloEssentials;
 import org.kilocraft.essentials.api.user.OnlineUser;
@@ -10,6 +15,7 @@ import org.kilocraft.essentials.util.registry.RegistryUtils;
 
 import java.text.DecimalFormat;
 import java.util.Objects;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -20,15 +26,19 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
+import org.slf4j.Logger;
 
 public class Vec3dLocation implements Location {
+
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static final DecimalFormat decimalFormat = new DecimalFormat("##.##");
     private double x, y, z;
     private EntityRotation rotation;
-    private ResourceLocation dimension;
+    @Nullable
+    private ResourceKey<Level> dimension;
     private boolean useShortDecimals = false;
 
-    private Vec3dLocation(double x, double y, double z, float yaw, float pitch, ResourceLocation dimension) {
+    private Vec3dLocation(double x, double y, double z, float yaw, float pitch, @Nullable ResourceKey<Level> dimension) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -36,7 +46,7 @@ public class Vec3dLocation implements Location {
         this.dimension = dimension;
     }
 
-    public static Vec3dLocation of(double x, double y, double z, float yaw, float pitch, ResourceLocation dimension) {
+    public static Vec3dLocation of(double x, double y, double z, float yaw, float pitch, @Nullable ResourceKey<Level> dimension) {
         return new Vec3dLocation(x, y, z, yaw, pitch, dimension);
     }
 
@@ -52,20 +62,8 @@ public class Vec3dLocation implements Location {
         return of(vec3d.x(), vec3d.y(), vec3d.z());
     }
 
-    public static Vec3dLocation of(ServerPlayer player) {
-        ResourceLocation dim = null;
-        if (player.getLevel() != null && player.getLevel().dimensionType() != null) {
-            dim = RegistryUtils.toIdentifier(player.getLevel().dimensionType());
-        }
-        return new Vec3dLocation(player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot(), dim);
-    }
-
     public static Vec3dLocation of(Entity entity) {
-        ResourceLocation dim = null;
-        if (entity.getCommandSenderWorld() != null && entity.getCommandSenderWorld().dimensionType() != null) {
-            dim = RegistryUtils.toIdentifier(entity.getCommandSenderWorld().dimensionType());
-        }
-        return new Vec3dLocation(entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot(), dim);
+        return new Vec3dLocation(entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot(), entity.getLevel().dimension());
     }
 
     public static Vec3dLocation of(OnlineUser user) {
@@ -89,14 +87,18 @@ public class Vec3dLocation implements Location {
 
     @Nullable
     @Override
-    public ResourceLocation getDimension() {
+    public ResourceKey<Level> getDimension() {
         return this.dimension;
     }
 
     @Nullable
     @Override
     public DimensionType getDimensionType() {
-        return RegistryUtils.toDimension(this.dimension);
+        if (this.getWorld() == null) {
+            return null;
+        } else {
+            return this.getWorld().dimensionType();
+        }
     }
 
     @Override
@@ -107,7 +109,11 @@ public class Vec3dLocation implements Location {
     @Nullable
     @Override
     public ServerLevel getWorld() {
-        return this.dimension == null ? null : RegistryUtils.toServerWorld(Objects.requireNonNull(this.getDimensionType(), "Null dimension provided"));
+        if (this.dimension == null) {
+            return null;
+        } else {
+            return KiloEssentials.getMinecraftServer().getLevel(this.dimension);
+        }
     }
 
     @Override
@@ -139,14 +145,14 @@ public class Vec3dLocation implements Location {
 
         tag.put("pos", pos);
 
-        if (this.dimension != null)
-            tag.putString("dim", this.dimension.toString());
+        if (this.dimension != null) {
+            ResourceLocation.CODEC.encodeStart(NbtOps.INSTANCE, this.dimension.location()).resultOrPartial(LOGGER::error).ifPresent(compoundTag -> tag.put("SpawnDimension", compoundTag));
+        }
 
-        if (this.rotation.getYaw() != 0 && this.rotation.getPitch() != 0) {
+        if (!(this.rotation.getYaw() == 0 && this.rotation.getPitch() == 0)) {
             CompoundTag view = new CompoundTag();
             view.putFloat("yaw", this.rotation.getYaw());
             view.putFloat("pitch", this.rotation.getPitch());
-
             tag.put("view", view);
         }
 
@@ -161,8 +167,9 @@ public class Vec3dLocation implements Location {
         this.y = pos.getDouble("y");
         this.z = pos.getDouble("z");
 
-        if (tag.contains("dim"))
-            this.dimension = new ResourceLocation(tag.getString("dim"));
+        if (tag.contains("dim")) {
+            this.dimension = Level.RESOURCE_KEY_CODEC.parse(NbtOps.INSTANCE, tag.get("dim")).resultOrPartial(LOGGER::error).orElse(Level.OVERWORLD);
+        }
 
         if (tag.contains("view")) {
             CompoundTag view = tag.getCompound("view");
@@ -191,13 +198,8 @@ public class Vec3dLocation implements Location {
     }
 
     @Override
-    public void setDimension(ResourceLocation dimension) {
+    public void setDimension(ResourceKey<Level> dimension) {
         this.dimension = dimension;
-    }
-
-    @Override
-    public void setDimension(DimensionType type) {
-        this.dimension = RegistryUtils.toIdentifier(type);
     }
 
     @Override
@@ -218,10 +220,6 @@ public class Vec3dLocation implements Location {
     @Override
     public Vec3i toVec3i() {
         return new Vec3i(this.z, this.y, this.z);
-    }
-
-    public Vec3iLocation toVec3iLocation() {
-        return Vec3iLocation.of((int) this.x, (int) this.y, (int) this.z, this.rotation.getYaw(), this.rotation.getPitch(), this.dimension);
     }
 
     public static Vec3dLocation dummy() {

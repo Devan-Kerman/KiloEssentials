@@ -117,7 +117,7 @@ public class PlayerWarpsCommand extends EssentialCommand {
                                     .append(Texter.newText(name.isEmpty() ? "&c?" : name))
                                     .append("\n")
                                     .append(new TextComponent("In ").withStyle(ChatFormatting.GRAY))
-                                    .append(new TextComponent(RegistryUtils.dimensionToName(warp.getLocation().getDimensionType())))
+                                    .append(new TextComponent(RegistryUtils.dimensionToName(warp.getLocation().getDimension())))
                                     .append("\n")
                                     .append(new TextComponent("At ").withStyle(ChatFormatting.GRAY))
                                     .append(new TextComponent(Math.round(location.getX()) + " " + Math.round(location.getY()) + " " + Math.round(location.getZ())).withStyle(ChatFormatting.WHITE))
