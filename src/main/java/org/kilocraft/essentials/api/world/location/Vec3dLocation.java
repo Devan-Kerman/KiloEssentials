@@ -146,7 +146,7 @@ public class Vec3dLocation implements Location {
         tag.put("pos", pos);
 
         if (this.dimension != null) {
-            ResourceLocation.CODEC.encodeStart(NbtOps.INSTANCE, this.dimension.location()).resultOrPartial(LOGGER::error).ifPresent(compoundTag -> tag.put("SpawnDimension", compoundTag));
+            ResourceLocation.CODEC.encodeStart(NbtOps.INSTANCE, this.dimension.location()).resultOrPartial(LOGGER::error).ifPresent(compoundTag -> tag.put("dim", compoundTag));
         }
 
         if (!(this.rotation.getYaw() == 0 && this.rotation.getPitch() == 0)) {
