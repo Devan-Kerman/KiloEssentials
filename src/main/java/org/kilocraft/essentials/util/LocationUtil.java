@@ -56,42 +56,6 @@ public class LocationUtil {
         return loc.getWorld().getBlockState(loc.toPos()).getMaterial().isSolid();
     }
 
-    public static void validateIsSafe(@NotNull final Location loc) throws InsecureDestinationException {
-        ServerLevel world = loc.getWorld();
-        Vec3dLocation vector = (Vec3dLocation) loc;
-        BlockPos pos;
-        BlockState state;
-        int tries = 0;
-        boolean hasAirSpace;
-        boolean isNether = loc.getDimension() != Level.NETHER;
-        boolean safe;
-
-        do {
-            tries++;
-            vector = (Vec3dLocation) LocationUtil.posOnGround(vector, false);
-            pos = vector.toPos();
-            state = world.getBlockState(pos);
-            Material material = state.getMaterial();
-
-            Biome.BiomeCategory category = Biome.getBiomeCategory(world.getBiome(pos));
-
-            if (!LocationUtil.hasSolidGround(vector)) {
-                safe = false;
-                continue;
-            }
-
-            hasAirSpace = !isNether || world.getBlockState(pos.above()).isAir();
-            safe = hasAirSpace && !material.isLiquid() && material != Material.FIRE &&
-                    category != Biome.BiomeCategory.OCEAN && category != Biome.BiomeCategory.RIVER &&
-                    !isBlockLiquid(vector.down());
-
-        } while (tries <= 5 && !safe);
-
-        if (!safe) {
-            throw new InsecureDestinationException("The destination is not safe!");
-        }
-    }
-
     public static boolean isDestinationToClose(OnlineUser user, Location destination) {
         // We can only check the distance if the locations are in the same dimension
         int minDistance = KiloConfig.main().server().minTeleportDistance;

@@ -87,11 +87,15 @@ dependencies {
     implementation "net.luckperms:api:${project.luckperms_version}"
 
     // DiscordFab
-    implementation "com.github.DrexHD:DiscordFab:${project.discordfab_version}"
+    implementation ("com.github.DrexHD:DiscordFab:${project.discordfab_version}") {
+        implementation("net.dv8tion:JDA:5.0.0-alpha.9") {
+            because "The specified version is no longer available"
+        }
+    }
 
     // Gson
     implementation "com.google.code.gson:gson:${project.gson_version}"
-    shadow "com.google.code.gson:gson:${project.gson_version}"
+    //shadow "com.google.code.gson:gson:${project.gson_version}"
 }
 
 task remapJar(type: net.fabricmc.loom.task.RemapJarTask, overwrite: true) {
