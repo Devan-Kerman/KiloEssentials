@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.10-SNAPSHOT'
+    id 'fabric-loom' version '0.11-SNAPSHOT'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'maven-publish'
     id 'com.palantir.git-version' version '0.12.2'
@@ -41,18 +41,21 @@ repositories {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/kiloessentials.accesswidener")
+    accessWidenerPath.set(file("src/main/resources/kiloessentials.accesswidener"))
 }
 
 shadowJar {
     classifier "shadow"
     configurations = [project.configurations.shadow]
+    dependencies {
+        exclude(dependency("com.google.code.gson:gson.*"))
+    }
 }
 
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings minecraft.officialMojangMappings()
+    mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API
@@ -77,11 +80,11 @@ dependencies {
     shadow "org.spongepowered:configurate-hocon:${project.configurate_version}"
 
     // Adventure
-    implementation "net.kyori:adventure-text-minimessage:${project.kyori_adventure_minimessage_version}"
-    shadow "net.kyori:adventure-text-minimessage:${project.kyori_adventure_minimessage_version}"
+    implementation "net.kyori:adventure-text-minimessage:${project.adventure_minimessage_version}"
+    shadow "net.kyori:adventure-text-minimessage:${project.adventure_minimessage_version}"
 
-    implementation "net.kyori:adventure-text-serializer-gson:${project.kyori_adventure_serializer_version}"
-    shadow "net.kyori:adventure-text-serializer-gson:${project.kyori_adventure_serializer_version}"
+    implementation "net.kyori:adventure-text-serializer-gson:${project.adventure_gson_serializer_version}"
+    shadow "net.kyori:adventure-text-serializer-gson:${project.adventure_gson_serializer_version}"
 
     // Luckperms
     implementation "net.luckperms:api:${project.luckperms_version}"
@@ -93,12 +96,9 @@ dependencies {
         }
     }
 
-    // Gson
-    implementation "com.google.code.gson:gson:${project.gson_version}"
-    //shadow "com.google.code.gson:gson:${project.gson_version}"
 }
 
-task remapJar(type: net.fabricmc.loom.task.RemapJarTask, overwrite: true) {
+remapJar {
     from zipTree(shadowJar.archiveFile) dependsOn shadowJar
 }
 

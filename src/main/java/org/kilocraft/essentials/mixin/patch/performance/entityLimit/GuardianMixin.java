@@ -1,12 +1,11 @@
 package org.kilocraft.essentials.mixin.patch.performance.entityLimit;
 
+import net.minecraft.util.RandomSource;
 import org.kilocraft.essentials.api.util.TickManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntityType;
@@ -23,7 +22,7 @@ public abstract class GuardianMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void shouldSpawn(EntityType<? extends Guardian> entityType, LevelAccessor world, MobSpawnType spawnReason, BlockPos blockPos, Random random, CallbackInfoReturnable<Boolean> cir) {
+    private static void shouldSpawn(EntityType<? extends Guardian> entityType, LevelAccessor world, MobSpawnType spawnReason, BlockPos blockPos, RandomSource random, CallbackInfoReturnable<Boolean> cir) {
         if (TickManager.isEntityLimitReached(world, blockPos, EntityType.GUARDIAN)) cir.setReturnValue(false);
     }
 }

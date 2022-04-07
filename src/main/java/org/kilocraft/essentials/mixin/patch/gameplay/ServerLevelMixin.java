@@ -1,11 +1,17 @@
 package org.kilocraft.essentials.mixin.patch.gameplay;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.storage.WritableLevelData;
 import org.kilocraft.essentials.util.settings.ServerSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -13,11 +19,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ServerLevel.class)
-public abstract class ServerLevelMixin {
+import java.util.function.Supplier;
 
-    @Shadow
-    public abstract void playSound(Player playerEntity, double d, double e, double f, SoundEvent soundEvent, SoundSource soundCategory, float g, float h);
+@Mixin(ServerLevel.class)
+public abstract class ServerLevelMixin extends Level {
+
+    protected ServerLevelMixin(WritableLevelData writableLevelData, ResourceKey<Level> resourceKey, Holder<DimensionType> holder, Supplier<ProfilerFiller> supplier, boolean bl, boolean bl2, long l, int i) {
+        super(writableLevelData, resourceKey, holder, supplier, bl, bl2, l, i);
+    }
 
     // Change global to local sound events
     @Inject(
@@ -40,7 +49,7 @@ public abstract class ServerLevelMixin {
                 case 1038 -> soundEvent = SoundEvents.END_PORTAL_SPAWN;
             }
             if (soundEvent != null)
-                this.playSound(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), soundEvent, SoundSource.HOSTILE, g, h);
+                this.playSound(null, blockPos, soundEvent, SoundSource.HOSTILE, g, h);
         }
     }
 

@@ -65,7 +65,7 @@ public final class ServerChat {
                     new ClientboundCustomSoundPacket(
                             new ResourceLocation(cfg.id),
                             SoundSource.MASTER,
-                            vec3d, (float) cfg.volume, (float) cfg.pitch)
+                            vec3d, (float) cfg.volume, (float) cfg.pitch, target.getRandom().nextLong())
             );
         }
     }

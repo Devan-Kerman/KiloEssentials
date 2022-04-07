@@ -67,10 +67,15 @@ public class MobCapCommand extends EssentialCommand {
     private int execute(CommandContext<CommandSourceStack> ctx, ServerLevel world) throws CommandSyntaxException {
         float f = FloatArgumentType.getFloat(ctx, "multiplier");
         String name = StringArgumentType.getString(ctx, "name");
-        Optional<MobCategory> spawnGroup = Optional.ofNullable(MobCategory.byName(name));
+        MobCategory mobCategory = null;
+        for (MobCategory value : MobCategory.values()) {
+            if (value.getName().equals(name)) {
+                mobCategory = value;
+            }
+        }
         ResourceLocation id = world.dimension().location();
-        if (spawnGroup.isPresent()) {
-            ServerSettings.setFloat("mobcap." + id.getPath() + "." + spawnGroup.get().getName().toLowerCase(), f);
+        if (mobCategory != null) {
+            ServerSettings.setFloat("mobcap." + id.getPath() + "." + name.toLowerCase(), f);
         } else if (name.equals("global")) {
             ServerSettings.setFloat("mobcap." + id.getPath(), f);
         } else {
