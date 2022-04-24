@@ -48,7 +48,7 @@ public class ItemNameCommand {
             this.add("reset");
         }};
         if (!item.isEmpty()) {
-            list.add(item.getHoverName().getContents());
+            list.add(item.getHoverName().getString());
         }
         return SharedSuggestionProvider.suggest(list, builder);
     }

@@ -28,7 +28,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -136,7 +135,7 @@ public class SignEditCommand extends EssentialCommand {
         SignBlockEntity sign = (SignBlockEntity) blockEntity;
 
         if (input.equals("reset")) {
-            sign.setMessage(line, new TextComponent(""));
+            sign.setMessage(line, Component.literal(""));
             this.updateSign(sign, player.getLevel(), blockEntity.getBlockPos());
             user.sendLangMessage("command.signedit.reset_text", line + 1);
             return SUCCESS;

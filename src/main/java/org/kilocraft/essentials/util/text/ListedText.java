@@ -1,5 +1,6 @@
 package org.kilocraft.essentials.util.text;
 
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.kilocraft.essentials.api.text.ComponentText;
 
@@ -10,7 +11,6 @@ import java.util.stream.Collectors;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 
 
 public class ListedText {
@@ -686,8 +686,8 @@ public class ListedText {
             int nextPage = this.pageIndex + 2;
 
             String SEPARATOR = "-----------------------------------------------------";
-            MutableComponent header = new TextComponent("")
-                    .append(new TextComponent("- [ ").withStyle(f3))
+            MutableComponent header = Component.literal("")
+                    .append(Component.literal("- [ ").withStyle(f3))
                     .append(Texter.newText(title).withStyle(f1))
                     .append(" ] ")
                     .append(SEPARATOR.substring(ComponentText.clearFormatting(title).length() + 4))
@@ -697,40 +697,40 @@ public class ListedText {
                 header.append("\n").append(ComponentText.toText(this.stickyHeader)).append("\n");
             }
 
-            MutableComponent button_prev = new TextComponent("")
-                    .append(new TextComponent("<-").withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD))
-                    .append(" ").append(new TextComponent("Prev").withStyle(f1))
+            MutableComponent button_prev = Component.literal("")
+                    .append(Component.literal("<-").withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD))
+                    .append(" ").append(Component.literal("Prev").withStyle(f1))
                     .withStyle((style) ->
-                            style.withHoverEvent(Texter.Events.onHover(new TextComponent((prevPage > 0) ? "<<<" : "|<").withStyle(f3)))
+                            style.withHoverEvent(Texter.Events.onHover(Component.literal((prevPage > 0) ? "<<<" : "|<").withStyle(f3)))
                                     .withClickEvent(prevPage > 0 ? Texter.Events.onClickRun(command.replace("%page%", String.valueOf(prevPage))) : null)
                     );
 
-            MutableComponent button_next = new TextComponent("")
-                    .append(new TextComponent("Next").withStyle(f1))
-                    .append(" ").append(new TextComponent("->").withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD)).append(" ")
+            MutableComponent button_next = Component.literal("")
+                    .append(Component.literal("Next").withStyle(f1))
+                    .append(" ").append(Component.literal("->").withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD)).append(" ")
                     .withStyle((style) ->
-                            style.withHoverEvent(Texter.Events.onHover(new TextComponent((nextPage <= this.maxPages) ? ">>>" : ">|").withStyle(f3)))
+                            style.withHoverEvent(Texter.Events.onHover(Component.literal((nextPage <= this.maxPages) ? ">>>" : ">|").withStyle(f3)))
                                     .withClickEvent(nextPage <= this.maxPages ? Texter.Events.onClickRun(command.replace("%page%", String.valueOf(nextPage))) : null)
                     );
 
-            MutableComponent buttons = new TextComponent("")
-                    .append(new TextComponent("[ ").withStyle(ChatFormatting.GRAY))
+            MutableComponent buttons = Component.literal("")
+                    .append(Component.literal("[ ").withStyle(ChatFormatting.GRAY))
                     .append(button_prev)
                     .append(" ")
                     .append(
-                            new TextComponent(String.valueOf(this.pageIndex + 1)).withStyle(ChatFormatting.GREEN)
-                                    .append(new TextComponent("/").withStyle(f3))
-                                    .append(new TextComponent(String.valueOf(this.maxPages)).withStyle(ChatFormatting.GREEN))
+                            Component.literal(String.valueOf(this.pageIndex + 1)).withStyle(ChatFormatting.GREEN)
+                                    .append(Component.literal("/").withStyle(f3))
+                                    .append(Component.literal(String.valueOf(this.maxPages)).withStyle(ChatFormatting.GREEN))
                     )
                     .append(" ")
                     .append(button_next)
-                    .append(new TextComponent("] ").withStyle(f3));
+                    .append(Component.literal("] ").withStyle(f3));
 
-            MutableComponent footer = new TextComponent("- ")
+            MutableComponent footer = Component.literal("- ")
                     .withStyle(ChatFormatting.GRAY)
-                    .append(buttons).append(new TextComponent(" ------------------------------".substring(buttons.getContents().length() + 3)).withStyle(ChatFormatting.GRAY));
+                    .append(buttons).append(Component.literal(" ------------------------------".substring(buttons.getString().length() + 3)).withStyle(ChatFormatting.GRAY));
 
-            MutableComponent text = new TextComponent("");
+            MutableComponent text = Component.literal("");
             if (this.textEntries == null && this.entries != null) {
                 for (String entry : this.entries) {
                     text.append(ComponentText.toText(entry)).append("\n");

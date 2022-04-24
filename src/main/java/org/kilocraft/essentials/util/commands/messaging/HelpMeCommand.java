@@ -6,7 +6,6 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import org.kilocraft.essentials.api.KiloEssentials;
 import org.kilocraft.essentials.api.command.EssentialCommand;
 import org.kilocraft.essentials.api.user.CommandSourceUser;
@@ -34,11 +33,11 @@ public class HelpMeCommand extends EssentialCommand {
 
     private int sendHelp(final CommandContext<CommandSourceStack> ctx) {
         final CommandSourceUser src = this.getCommandSource(ctx);
-        final Component text = new TextComponent("")
+        final Component text = Component.literal("")
                 .append(StringText.of("command.helpme.prefix"))
                 .append(" ")
-                .append(new TextComponent(ctx.getSource().getTextName()).withStyle(ChatFormatting.YELLOW)
-                        .append(new TextComponent(": ").withStyle(ChatFormatting.WHITE)))
+                .append(Component.literal(ctx.getSource().getTextName()).withStyle(ChatFormatting.YELLOW)
+                        .append(Component.literal(": ").withStyle(ChatFormatting.WHITE)))
                 .append(Texter.newText(getString(ctx, "message")).withStyle(ChatFormatting.WHITE));
 
         int i = 0;

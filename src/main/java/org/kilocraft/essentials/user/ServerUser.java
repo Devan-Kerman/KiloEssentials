@@ -32,7 +32,6 @@ import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
@@ -380,7 +379,7 @@ public class ServerUser implements User {
         try {
             this.saveData();
         } catch (IOException e) {
-            throw new SimpleCommandExceptionType(new TextComponent(e.getMessage()).withStyle(ChatFormatting.RED)).create();
+            throw new SimpleCommandExceptionType(Component.literal(e.getMessage()).withStyle(ChatFormatting.RED)).create();
         }
     }
 

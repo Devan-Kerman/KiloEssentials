@@ -16,7 +16,6 @@ import net.minecraft.commands.arguments.EntitySummonArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.commands.synchronization.SuggestionProviders;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -128,7 +127,7 @@ public class EntitiesCommand extends EssentialCommand {
                 .append(Component.text(":\n").color(NamedTextColor.YELLOW));
         final int[] i = {0};
         this.sortByValue(items).forEach(entry -> {
-            itemHover.append(ComponentText.toComponent(new TranslatableComponent(entry.getKey().getDescriptionId())).color(NamedTextColor.GRAY), ComponentText.of(": ").color(NamedTextColor.GRAY))
+            itemHover.append(ComponentText.toComponent(net.minecraft.network.chat.Component.translatable(entry.getKey().getDescriptionId())).color(NamedTextColor.GRAY), ComponentText.of(": ").color(NamedTextColor.GRAY))
                     .append(ComponentText.of("<color:" + this.getHex(entry.getValue(), 500) + ">" + entry.getValue() + ((i[0] % 3 == 2) ? "\n" : " ")));
             i[0]++;
         });

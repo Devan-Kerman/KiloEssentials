@@ -6,7 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import org.kilocraft.essentials.api.ModConstants;
 import org.kilocraft.essentials.api.command.EssentialCommand;
@@ -68,8 +68,8 @@ public class HomesCommand extends EssentialCommand {
         for (Home home : user.getHomesHandler().getHomes()) {
             Vec3dLocation loc = (Vec3dLocation) home.getLocation();
             text.append(home.getName(),
-                    Texter.Events.onHover(new TextComponent("")
-                            .append(new TextComponent(ModConstants.translation("general.click_teleport")).withStyle(ChatFormatting.YELLOW))
+                    Texter.Events.onHover(Component.literal("")
+                            .append(Component.literal(ModConstants.translation("general.click_teleport")).withStyle(ChatFormatting.YELLOW))
                             .append("\n")
                             .append(Texter.newText(loc.asFormattedString()))
                     ),

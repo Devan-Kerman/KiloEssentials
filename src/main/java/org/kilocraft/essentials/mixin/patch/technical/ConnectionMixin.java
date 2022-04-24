@@ -3,7 +3,7 @@ package org.kilocraft.essentials.mixin.patch.technical;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.network.Connection;
 import net.minecraft.network.PacketListener;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,7 +33,7 @@ public abstract class ConnectionMixin {
                 this.lastInterval = System.currentTimeMillis();
             }
             if (this.packetsSinceLastInterval >= MAX_PACKETS_PER_SECOND) {
-                networkHandler.disconnect(new TranslatableComponent("disconnect.exceeded_packet_rate"));
+                networkHandler.disconnect(Component.translatable("disconnect.exceeded_packet_rate"));
             }
             this.packetsSinceLastInterval++;
         }

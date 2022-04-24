@@ -23,7 +23,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
@@ -153,14 +152,14 @@ public class SethomeCommand extends EssentialCommand {
     }
 
     private Component getConfirmationText(String homeName, String user) {
-        return new TextComponent("")
+        return Component.literal("")
                 .append(StringText.of("command.sethome.confirmation_message")
                         .withStyle(ChatFormatting.YELLOW))
-                .append(new TextComponent(" [").withStyle(ChatFormatting.GRAY)
-                        .append(new TextComponent("Click here to Confirm").withStyle(ChatFormatting.GREEN))
-                        .append(new TextComponent("]").withStyle(ChatFormatting.GRAY))
+                .append(Component.literal(" [").withStyle(ChatFormatting.GRAY)
+                        .append(Component.literal("Click here to Confirm").withStyle(ChatFormatting.GREEN))
+                        .append(Component.literal("]").withStyle(ChatFormatting.GRAY))
                         .withStyle((style) -> {
-                            return style.applyFormat(ChatFormatting.GRAY).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent("Confirm").withStyle(ChatFormatting.YELLOW))).withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sethome -confirmed-" + homeName + " " + user));
+                            return style.applyFormat(ChatFormatting.GRAY).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Confirm").withStyle(ChatFormatting.YELLOW))).withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sethome -confirmed-" + homeName + " " + user));
                         }));
     }
 

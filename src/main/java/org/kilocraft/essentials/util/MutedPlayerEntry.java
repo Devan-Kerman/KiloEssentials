@@ -10,7 +10,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 public class MutedPlayerEntry extends MuteEntry<GameProfile> {
 
@@ -24,7 +23,7 @@ public class MutedPlayerEntry extends MuteEntry<GameProfile> {
 
     public Component toText() {
         GameProfile gameProfile = (GameProfile) ((StoredUserEntryAccessor<?>) this).getUser();
-        return new TextComponent(gameProfile.getName() != null ? gameProfile.getName() : Objects.toString(gameProfile.getId(), "(Unknown)"));
+        return Component.literal(gameProfile.getName() != null ? gameProfile.getName() : Objects.toString(gameProfile.getId(), "(Unknown)"));
     }
 
     private static GameProfile profileFromJson(JsonObject jsonObject) {

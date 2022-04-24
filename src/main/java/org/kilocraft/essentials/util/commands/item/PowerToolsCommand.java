@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import net.minecraft.network.chat.Component;
 import org.kilocraft.essentials.api.command.ArgumentSuggestions;
 import org.kilocraft.essentials.api.user.CommandSourceUser;
 import org.kilocraft.essentials.user.CommandSourceServerUser;
@@ -23,7 +24,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
@@ -157,14 +157,14 @@ public class PowerToolsCommand {
 
         ListTag commands = item.getTag().getList("NBTCommands", 8);
 
-        MutableComponent text = new TextComponent("PowerTool Commands:").withStyle(ChatFormatting.GOLD);
+        MutableComponent text = Component.literal("PowerTool Commands:").withStyle(ChatFormatting.GOLD);
 
         for (int i = 0; i < commands.size(); i++) {
             if (commands.getString(i).equals(""))
                 continue;
 
-            text.append(new TextComponent("\n - ").withStyle(ChatFormatting.YELLOW))
-                    .append(new TextComponent(commands.getString(i)).withStyle(ChatFormatting.WHITE));
+            text.append(Component.literal("\n - ").withStyle(ChatFormatting.YELLOW))
+                    .append(Component.literal(commands.getString(i)).withStyle(ChatFormatting.WHITE));
         }
 
         user.sendMessage(text);

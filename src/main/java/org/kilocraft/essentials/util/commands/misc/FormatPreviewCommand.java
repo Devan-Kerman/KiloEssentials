@@ -10,7 +10,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.TextComponent;
 import org.kilocraft.essentials.api.command.ArgumentSuggestions;
 import org.kilocraft.essentials.api.command.EssentialCommand;
 import org.kilocraft.essentials.api.text.ComponentText;
@@ -54,7 +53,7 @@ public class FormatPreviewCommand extends EssentialCommand {
     private static int executeLegacy(CommandContext<CommandSourceStack> ctx) {
         final String text = getString(ctx, "text");
         ctx.getSource().sendSuccess(
-                new TextComponent("Text Preview").withStyle(ChatFormatting.YELLOW)
+                net.minecraft.network.chat.Component.literal("Text Preview").withStyle(ChatFormatting.YELLOW)
                         .append("\n").append(ComponentText.toText(text))
                 , false
         );

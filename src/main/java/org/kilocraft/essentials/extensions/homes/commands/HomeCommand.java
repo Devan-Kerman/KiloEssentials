@@ -11,7 +11,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import org.kilocraft.essentials.api.command.EssentialCommand;
 import org.kilocraft.essentials.api.command.IEssentialCommand;
@@ -30,7 +29,7 @@ import org.kilocraft.essentials.util.LocationUtil;
 import org.kilocraft.essentials.util.commands.CommandUtils;
 
 public class HomeCommand extends EssentialCommand {
-    private static final SimpleCommandExceptionType MISSING_DIMENSION = new SimpleCommandExceptionType(new TextComponent("The Dimension this home exists in no longer exists"));
+    private static final SimpleCommandExceptionType MISSING_DIMENSION = new SimpleCommandExceptionType(Component.literal("The Dimension this home exists in no longer exists"));
 
     public HomeCommand() {
         super("home", CommandPermission.HOME_SELF_TP);
@@ -142,14 +141,14 @@ public class HomeCommand extends EssentialCommand {
     }
 
     private Component getTeleportConfirmationText(String homeName, String owner) {
-        return new TextComponent("")
+        return Component.literal("")
                 .append(StringText.of("general.loc.unsafe.confirmation")
                         .withStyle(ChatFormatting.YELLOW))
-                .append(new TextComponent(" [").withStyle(ChatFormatting.GRAY)
-                        .append(new TextComponent("Click here to Confirm").withStyle(ChatFormatting.GREEN))
-                        .append(new TextComponent("]").withStyle(ChatFormatting.GRAY))
+                .append(Component.literal(" [").withStyle(ChatFormatting.GRAY)
+                        .append(Component.literal("Click here to Confirm").withStyle(ChatFormatting.GREEN))
+                        .append(Component.literal("]").withStyle(ChatFormatting.GRAY))
                         .withStyle((style) -> {
-                            return style.applyFormat(ChatFormatting.GRAY).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent("Confirm").withStyle(ChatFormatting.YELLOW))).withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/home -confirmed-" + homeName + " " + owner));
+                            return style.applyFormat(ChatFormatting.GRAY).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Confirm").withStyle(ChatFormatting.YELLOW))).withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/home -confirmed-" + homeName + " " + owner));
                         }));
     }
 

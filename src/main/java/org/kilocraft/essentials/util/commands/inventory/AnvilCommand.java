@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -26,7 +26,7 @@ public class AnvilCommand extends EssentialCommand {
 
     private int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
-        player.openMenu(new SimpleMenuProvider(this::createMenu, new TranslatableComponent("container.repair")));
+        player.openMenu(new SimpleMenuProvider(this::createMenu, Component.translatable("container.repair")));
         return SUCCESS;
     }
 

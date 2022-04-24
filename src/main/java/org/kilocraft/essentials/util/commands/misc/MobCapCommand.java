@@ -79,7 +79,7 @@ public class MobCapCommand extends EssentialCommand {
         } else if (name.equals("global")) {
             ServerSettings.setFloat("mobcap." + id.getPath(), f);
         } else {
-            throw new SimpleCommandExceptionType(new net.minecraft.network.chat.TextComponent("Invalid spawn group: " + name)).create();
+            throw new SimpleCommandExceptionType(net.minecraft.network.chat.Component.literal("Invalid spawn group: " + name)).create();
         }
         ServerPlayer player = ctx.getSource().getPlayerOrException();
         player.displayClientMessage(StringText.of("command.mobpsawn", f, name), false);

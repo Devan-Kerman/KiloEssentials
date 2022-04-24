@@ -79,7 +79,7 @@ public class CommandUtils {
     }
 
     public static String getDisplayName(CommandSourceStack source) throws CommandSyntaxException {
-        return isConsole(source) ? source.getTextName() : source.getPlayerOrException().getDisplayName().getContents();
+        return isConsole(source) ? source.getTextName() : source.getPlayerOrException().getDisplayName().getString();
     }
 
     public static int runCommandWithFormatting(@NotNull final CommandSourceStack src, @NotNull final String cmd) {

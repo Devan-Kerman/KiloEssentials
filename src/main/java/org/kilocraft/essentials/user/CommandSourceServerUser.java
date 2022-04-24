@@ -10,7 +10,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameType;
 import org.jetbrains.annotations.NotNull;
@@ -99,7 +98,7 @@ public class CommandSourceServerUser implements CommandSourceUser {
 
     @Override
     public net.minecraft.network.chat.Component getRankedDisplayName() {
-        return new TextComponent(this.getDisplayName());
+        return net.minecraft.network.chat.Component.literal(this.getDisplayName());
     }
 
     @Override
@@ -109,7 +108,7 @@ public class CommandSourceServerUser implements CommandSourceUser {
 
     @Override
     public net.minecraft.network.chat.Component getRankedName() {
-        return new TextComponent(this.getDisplayName());
+        return net.minecraft.network.chat.Component.literal(this.getDisplayName());
     }
 
     @Override
@@ -272,10 +271,10 @@ public class CommandSourceServerUser implements CommandSourceUser {
 
     @Override
     public void sendMessage(String message) {
-        MutableComponent text = new TextComponent(CommandUtils.isConsole(this.source) ? "\n" : "");
+        MutableComponent text = net.minecraft.network.chat.Component.literal(CommandUtils.isConsole(this.source) ? "\n" : "");
         this.sendMessage(text.append(ComponentText.toText(message).withStyle(style -> {
             if (SharedConstants.IS_RUNNING_IN_IDE && this.hasPermission(EssentialPermission.DEBUG)) {
-                return style.withHoverEvent(new net.minecraft.network.chat.HoverEvent(net.minecraft.network.chat.HoverEvent.Action.SHOW_TEXT, new TextComponent(message)));
+                return style.withHoverEvent(new net.minecraft.network.chat.HoverEvent(net.minecraft.network.chat.HoverEvent.Action.SHOW_TEXT, net.minecraft.network.chat.Component.literal(message)));
             }
             return style;
         })));

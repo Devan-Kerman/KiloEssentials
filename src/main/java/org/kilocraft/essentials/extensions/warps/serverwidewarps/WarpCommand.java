@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.minecraft.network.chat.Component;
 import org.kilocraft.essentials.api.KiloEssentials;
 import org.kilocraft.essentials.api.command.IEssentialCommand;
 import org.kilocraft.essentials.api.user.CommandSourceUser;
@@ -26,7 +27,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.world.level.ChunkPos;
 
@@ -38,8 +38,8 @@ import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 public class WarpCommand {
-    private static final SimpleCommandExceptionType WARP_NOT_FOUND_EXCEPTION = new SimpleCommandExceptionType(new TextComponent("Can not find the warp specified!"));
-    private static final SimpleCommandExceptionType NO_WARPS = new SimpleCommandExceptionType(new TextComponent("There are no Warps set!"));
+    private static final SimpleCommandExceptionType WARP_NOT_FOUND_EXCEPTION = new SimpleCommandExceptionType(Component.literal("Can not find the warp specified!"));
+    private static final SimpleCommandExceptionType NO_WARPS = new SimpleCommandExceptionType(Component.literal("There are no Warps set!"));
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> builder = literal("warp")
@@ -129,26 +129,26 @@ public class WarpCommand {
         if (warpsSize == 0)
             throw NO_WARPS.create();
 
-        MutableComponent text = new TextComponent("Warps").withStyle(ChatFormatting.GOLD)
-                .append(new TextComponent(" [ ").withStyle(ChatFormatting.DARK_GRAY))
-                .append(new TextComponent(String.valueOf(warpsSize)).withStyle(ChatFormatting.LIGHT_PURPLE))
-                .append(new TextComponent(" ]: ").withStyle(ChatFormatting.DARK_GRAY));
+        MutableComponent text = Component.literal("Warps").withStyle(ChatFormatting.GOLD)
+                .append(Component.literal(" [ ").withStyle(ChatFormatting.DARK_GRAY))
+                .append(Component.literal(String.valueOf(warpsSize)).withStyle(ChatFormatting.LIGHT_PURPLE))
+                .append(Component.literal(" ]: ").withStyle(ChatFormatting.DARK_GRAY));
 
         int i = 0;
         boolean nextColor = false;
         for (ServerWarp warp : ServerWarpManager.getWarps()) {
-            TextComponent thisWarp = new TextComponent("");
+            MutableComponent thisWarp = Component.literal("");
             i++;
 
             ChatFormatting thisFormat = nextColor ? ChatFormatting.WHITE : ChatFormatting.GRAY;
 
-            thisWarp.append(new TextComponent(warp.getName()).withStyle((style) -> style.applyFormat(thisFormat).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                    new TextComponent("[i] ").withStyle(ChatFormatting.YELLOW)
-                            .append(new TextComponent("Click to teleport!").withStyle(ChatFormatting.GREEN)))).withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+            thisWarp.append(Component.literal(warp.getName()).withStyle((style) -> style.applyFormat(thisFormat).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    Component.literal("[i] ").withStyle(ChatFormatting.YELLOW)
+                            .append(Component.literal("Click to teleport!").withStyle(ChatFormatting.GREEN)))).withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                     "/warp " + warp.getName()))));
 
             if (warpsSize != i)
-                thisWarp.append(new TextComponent(", ").withStyle(ChatFormatting.DARK_GRAY));
+                thisWarp.append(Component.literal(", ").withStyle(ChatFormatting.DARK_GRAY));
 
             nextColor = !nextColor;
 

@@ -15,6 +15,10 @@ public class WorldConfigSection {
     @Comment("Put the identifier of a dimension here to disable it!")
     public List<String> disabledDimensions = Lists.newArrayList("myserver:custom_dimension");
 
+    @Setting(value = "allowEnd")
+    @Comment("Determines if end portal can be used to enter the end")
+    public boolean allowEnd = true;
+
     @Setting(value = "kickFromDimensionIfNotAllowed")
     @Comment("If set to true and if a player is inside of a disallowed dimension then they'll get kicked back to their spawnpoint")
     public boolean kickFromDimension = true;

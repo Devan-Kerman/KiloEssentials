@@ -11,7 +11,6 @@ import java.util.function.Predicate;
 import net.minecraft.commands.arguments.selector.EntitySelectorParser;
 import net.minecraft.commands.arguments.selector.options.EntitySelectorOptions;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 @Mixin(EntitySelectorOptions.class)
 public abstract class EntitySelectorOptionsMixin {
@@ -34,7 +33,7 @@ public abstract class EntitySelectorOptionsMixin {
             boolean negate = entitySelectorReader.shouldInvertValue();
             String permission = entitySelectorReader.getReader().readUnquotedString();
             entitySelectorReader.addPredicate((entity) -> (KiloEssentials.hasPermissionNode(entity.createCommandSourceStack(), permission)) != negate);
-        }, (entitySelectorReader) -> true, new TextComponent(""));
+        }, (entitySelectorReader) -> true, Component.literal(""));
     }
 
 }

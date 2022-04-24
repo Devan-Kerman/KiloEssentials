@@ -7,8 +7,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import org.kilocraft.essentials.api.ModConstants;
 import org.kilocraft.essentials.api.command.EssentialCommand;
 import org.kilocraft.essentials.api.user.CommandSourceUser;
@@ -70,16 +70,16 @@ public class WhoIsCommand extends EssentialCommand {
 
         text.append("UUID",
                 Texter.appendButton(
-                        new TextComponent(target.getUuid().toString()),
-                        new TextComponent(ModConstants.translation("general.click_copy")),
+                        Component.literal(target.getUuid().toString()),
+                        Component.literal(ModConstants.translation("general.click_copy")),
                         ClickEvent.Action.COPY_TO_CLIPBOARD,
                         target.getUuid().toString()
                 )
         );
         text.append("IP (Last Saved)",
                 Texter.appendButton(
-                        new TextComponent(target.getLastSocketAddress()),
-                        new TextComponent(ModConstants.translation("general.click_copy")),
+                        Component.literal(target.getLastSocketAddress()),
+                        Component.literal(ModConstants.translation("general.click_copy")),
                         ClickEvent.Action.COPY_TO_CLIPBOARD,
                         target.getLastSocketAddress()
                 )
@@ -151,7 +151,7 @@ public class WhoIsCommand extends EssentialCommand {
         assert vec.getDimension() != null;
         return Texter.appendButton(
                 text,
-                new TextComponent(ModConstants.translation("general.click_tp")),
+                Component.literal(ModConstants.translation("general.click_tp")),
                 ClickEvent.Action.SUGGEST_COMMAND,
                 "/tpin " + vec.getDimension().toString() + " " +
                         vec.getX() + " " + vec.getY() + " " + vec.getZ() + " @s"

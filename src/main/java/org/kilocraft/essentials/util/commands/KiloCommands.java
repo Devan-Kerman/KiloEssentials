@@ -46,7 +46,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -186,8 +185,8 @@ public class KiloCommands {
                 StringText.of("command.info", ModConstants.getMinecraftVersion())
                         .withStyle(ChatFormatting.GRAY)
                         .append("\n")
-                        .append(new TextComponent("GitHub: ").withStyle(ChatFormatting.GRAY))
-                        .append(ComponentUtils.wrapInSquareBrackets(new TextComponent("github.com/KiloCraft/KiloEssentials/")
+                        .append(Component.literal("GitHub: ").withStyle(ChatFormatting.GRAY))
+                        .append(ComponentUtils.wrapInSquareBrackets(Component.literal("github.com/KiloCraft/KiloEssentials/")
                                 .withStyle(style -> style.applyFormat(ChatFormatting.GOLD)
                                         .withClickEvent(Texter.Events.onClickOpen("https://github.com/KiloCraft/KiloEssentials/"))
                                         .withHoverEvent(Texter.Events.onHover("&eClick to open"))
@@ -204,7 +203,7 @@ public class KiloCommands {
     public static SimpleCommandExceptionType getException(final String langErrorKey, final Object... objects) {
         final String message = ModConstants.translation(langErrorKey, objects);
         return KiloCommands.commandException(
-                new TextComponent(objects != null ? String.format(message, objects) : message).withStyle(ChatFormatting.RED));
+                Component.literal(objects != null ? String.format(message, objects) : message).withStyle(ChatFormatting.RED));
     }
 
     private static SimpleCommandExceptionType commandException(final Component text) {

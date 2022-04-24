@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -180,7 +180,7 @@ public class SeatManager implements ConfigurableFeature, TickListener {
 
         ArmorStand stand = EntityType.ARMOR_STAND.create(
                 loc.getWorld(), null,
-                new TextComponent("KE$SitStand#" + this.stands.size() + user.getUsername()), null, loc.toPos(),
+                Component.literal("KE$SitStand#" + this.stands.size() + user.getUsername()), null, loc.toPos(),
                 MobSpawnType.TRIGGERED, true, true
         );
 

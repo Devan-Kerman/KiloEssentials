@@ -8,6 +8,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.network.chat.Component;
 import org.kilocraft.essentials.api.command.EssentialCommand;
 import org.kilocraft.essentials.api.text.ComponentText;
 import org.kilocraft.essentials.api.text.TextInput;
@@ -32,7 +33,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
 
 public class PlayerWarpsCommand extends EssentialCommand {
     static final String CACHE_KEY = "command.playerwarps";
@@ -107,36 +107,36 @@ public class PlayerWarpsCommand extends EssentialCommand {
 
             index++;
             MutableComponent text = Texter.newText();
-            text.append(new TextComponent(index + ".").withStyle((style) -> style.withColor(NUM_COLOR)));
+            text.append(Component.literal(index + ".").withStyle((style) -> style.withColor(NUM_COLOR)));
             text.append(" ");
             Location location = warp.getLocation();
-            text.append(new TextComponent(warp.getName()).withStyle((style) ->
+            text.append(Component.literal(warp.getName()).withStyle((style) ->
                     style.withHoverEvent(Texter.Events.onHover(
                             Texter.newText()
-                                    .append(new TextComponent("By ").withStyle(ChatFormatting.WHITE))
+                                    .append(Component.literal("By ").withStyle(ChatFormatting.WHITE))
                                     .append(Texter.newText(name.isEmpty() ? "&c?" : name))
                                     .append("\n")
-                                    .append(new TextComponent("In ").withStyle(ChatFormatting.GRAY))
-                                    .append(new TextComponent(RegistryUtils.dimensionToName(warp.getLocation().getDimension())))
+                                    .append(Component.literal("In ").withStyle(ChatFormatting.GRAY))
+                                    .append(Component.literal(RegistryUtils.dimensionToName(warp.getLocation().getDimension())))
                                     .append("\n")
-                                    .append(new TextComponent("At ").withStyle(ChatFormatting.GRAY))
-                                    .append(new TextComponent(Math.round(location.getX()) + " " + Math.round(location.getY()) + " " + Math.round(location.getZ())).withStyle(ChatFormatting.WHITE))
+                                    .append(Component.literal("At ").withStyle(ChatFormatting.GRAY))
+                                    .append(Component.literal(Math.round(location.getX()) + " " + Math.round(location.getY()) + " " + Math.round(location.getZ())).withStyle(ChatFormatting.WHITE))
                     ))
             ).withStyle(ChatFormatting.WHITE));
-            text.append(new TextComponent(" (").withStyle(ChatFormatting.DARK_GRAY));
-            text.append(new TextComponent(warp.getType()).withStyle((style) -> style.withColor(PRIMARY_COLOR)));
-            text.append(new TextComponent(") ").withStyle(ChatFormatting.DARK_GRAY));
+            text.append(Component.literal(" (").withStyle(ChatFormatting.DARK_GRAY));
+            text.append(Component.literal(warp.getType()).withStyle((style) -> style.withColor(PRIMARY_COLOR)));
+            text.append(Component.literal(") ").withStyle(ChatFormatting.DARK_GRAY));
 
             text.append(
                     Texter.newText().append(
                             ComponentUtils.wrapInSquareBrackets(
-                                    Texter.getButton(" &6i ", "/pwarp info " + warp.getName(),
-                                            Texter.newText("&dClick for more Info"))
+                                    Texter.getButton(" <gold> ", "/pwarp info " + warp.getName(),
+                                            Texter.newText("<light_purple>Click for more Info"))
                             )
                     ).append(" ").append(
                             ComponentUtils.wrapInSquareBrackets(
-                                    Texter.getButton("&aGo", "/pwarp teleport " + warp.getName(),
-                                            Texter.newText("&dClick to Teleport"))
+                                    Texter.getButton("<green>Go", "/pwarp teleport " + warp.getName(),
+                                            Texter.newText("<light_purple>Click to Teleport"))
                             )
                     )
             ).append(" ");

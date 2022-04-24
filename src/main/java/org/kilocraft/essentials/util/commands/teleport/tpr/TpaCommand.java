@@ -58,10 +58,8 @@ public class TpaCommand extends EssentialCommand {
         src.sendMessage(
                 ComponentText.toText(this.tl("command.tpa.sent", target.getFormattedDisplayName()))
                         .append(" ")
-                        .append(
-                                ComponentUtils.wrapInSquareBrackets(
-                                        Texter.getButton(" &c" + '\u00d7' + "&r ", "/tpcancel " + target.getUsername(), Texter.newText(ModConstants.translation("general.click_cancel")))
-                                                .withStyle(style -> style.withColor(RED_COLOR))
+                        .append(ComponentUtils.wrapInSquareBrackets(
+                                        Texter.getButton(" <red>" + '\u00d7' + "<reset> ", "/tpcancel " + target.getUsername(), Texter.newText(ModConstants.translation("general.click_cancel")))
                                 )
                         )
         );
@@ -71,14 +69,14 @@ public class TpaCommand extends EssentialCommand {
                         .append(" ")
                         .append(
                                 ComponentUtils.wrapInSquareBrackets(
-                                        Texter.getButton(" &a" + '\u2714' + "&r ", "/tpaccept " + src.getUsername(), Texter.newText(ModConstants.translation("general.click_accept")))
+                                        Texter.getButton(" <green>" + '\u2714' + "<reset> ", "/tpaccept " + src.getUsername(), Texter.newText(ModConstants.translation("general.click_accept")))
                                                 .withStyle(style -> style.withColor(GREEN_COLOR))
                                 )
                         )
                         .append(" ")
                         .append(
                                 ComponentUtils.wrapInSquareBrackets(
-                                        Texter.getButton(" &c" + '\u00d7' + "&r ", "/tpdeny " + src.getUsername(), Texter.newText(ModConstants.translation("general.click_deny")))
+                                        Texter.getButton(" <red>" + '\u00d7' + "<reset> ", "/tpdeny " + src.getUsername(), Texter.newText(ModConstants.translation("general.click_deny")))
                                                 .withStyle(style -> style.withColor(RED_COLOR))
                                 )
                         )

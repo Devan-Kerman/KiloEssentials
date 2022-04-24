@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -82,7 +81,7 @@ public class AnimatedText {
         this.executorService.shutdown();
 
         if (this.player != null)
-            this.player.connection.send(new ClientboundSetActionBarTextPacket(new TextComponent("")));
+            this.player.connection.send(new ClientboundSetActionBarTextPacket(Component.literal("")));
     }
 
     public void remove() {

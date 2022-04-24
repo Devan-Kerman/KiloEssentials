@@ -6,7 +6,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.inventory.ChestMenu;
@@ -36,7 +35,7 @@ public class EnderchestCommand extends EssentialCommand {
     private int execute(ServerPlayer sender, ServerPlayer target) {
         OnlineUser targetUser = this.getOnlineUser(target);
         Component text;
-        Component translatable = new TranslatableComponent("container.enderchest");
+        Component translatable = Component.translatable("container.enderchest");
 
         if (!sender.equals(target)) {
             text = Texter.newText().append(translatable).append(" ").append(targetUser.getFormattedDisplayName());

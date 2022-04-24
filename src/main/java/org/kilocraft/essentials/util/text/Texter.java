@@ -6,7 +6,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
 import org.jetbrains.annotations.Nullable;
 import org.kilocraft.essentials.api.text.ComponentText;
 import org.kilocraft.essentials.chat.StringText;
@@ -23,16 +22,16 @@ public class Texter {
     }
 
     public static MutableComponent newText() {
-        return new TextComponent("");
+        return Component.literal("");
     }
 
     public static MutableComponent newRawText(final String string) {
-        return new TextComponent(string);
+        return Component.literal(string);
     }
 
     public static MutableComponent blockStyle(MutableComponent text) {
-        MutableComponent separator = new TextComponent(SEPARATOR).withStyle(ChatFormatting.GRAY);
-        return new TextComponent("").append(separator).append(text).append(separator);
+        MutableComponent separator = Component.literal(SEPARATOR).withStyle(ChatFormatting.GRAY);
+        return Component.literal("").append(separator).append(text).append(separator);
     }
 
     public static MutableComponent appendButton(MutableComponent text, MutableComponent hoverText, ClickEvent.Action action, String actionValue) {
@@ -44,7 +43,11 @@ public class Texter {
     }
 
     public static MutableComponent getButton(String title, String command, MutableComponent hoverText) {
-        return newText(title).withStyle((style) -> style.withHoverEvent(Events.onHover(hoverText)).withClickEvent(Events.onClickRun(command)));
+        return newText(title).withStyle(style -> style
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText))
+                .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
+        );
+        //return newRawText(title).withStyle((style) -> style.withHoverEvent(Events.onHover(hoverText)).withClickEvent(Events.onClickRun(command)));
     }
 
     public static MutableComponent getButton(String title, String command, String string) {
@@ -169,30 +172,6 @@ public class Texter {
             return builder.toString();
         }
 
-
-        public static String toFormattedString2(Component text) {
-            return toFormattedString2(text, false);
-        }
-
-        public static String toFormattedString2(Component text, boolean skipSelf) {
-            StringBuilder builder = new StringBuilder();
-            if (!skipSelf) {
-                builder.append(styleToString2(text.getStyle()));
-                builder.append(text.getContents());
-            }
-            Style style = text.getStyle();
-            for (Component sibling : text.getSiblings()) {
-                if (style.equals(sibling.getStyle())) {
-                    builder.append(styleToString2(sibling.getStyle()));
-                    builder.append(sibling.getContents());
-                    builder.append(toFormattedString2(sibling, true));
-                } else {
-                    builder.append(toFormattedString2(sibling, false));
-                }
-            }
-
-            return builder.toString();
-        }
 
         private static String styleToString2(Style style) {
             StringBuilder builder = new StringBuilder();
@@ -361,8 +340,8 @@ public class Texter {
         private boolean nextColor = false;
 
         public ListStyle(String title, ChatFormatting primary, ChatFormatting borders, ChatFormatting aFormat, ChatFormatting bFormat, @Nullable List<Object> list) {
-            this.title = new TextComponent(title);
-            this.text = new TextComponent("");
+            this.title = Component.literal(title);
+            this.text = Component.literal("");
             this.primary = primary;
             this.aFormat = aFormat;
             this.bFormat = bFormat;
@@ -413,12 +392,12 @@ public class Texter {
         }
 
         public MutableComponent build() {
-            this.title = new TextComponent("")
-                    .append(new TextComponent(this.title.getString()).withStyle(this.primary))
+            this.title = Component.literal("")
+                    .append(Component.literal(this.title.getString()).withStyle(this.primary))
                     .append(" ")
-                    .append(new TextComponent("[").withStyle(this.borders))
-                    .append(new TextComponent(String.valueOf(this.size)).withStyle(this.primary))
-                    .append(new TextComponent("]: ")).withStyle(this.borders);
+                    .append(Component.literal("[").withStyle(this.borders))
+                    .append(Component.literal(String.valueOf(this.size)).withStyle(this.primary))
+                    .append(Component.literal("]: ")).withStyle(this.borders);
 
             if (!this.list.isEmpty()) {
                 for (Object o : this.list) {
@@ -442,18 +421,18 @@ public class Texter {
         private boolean useLineStarter = false;
 
         public InfoBlockStyle(String title, ChatFormatting primary, ChatFormatting secondary, ChatFormatting borders) {
-            this.header = new TextComponent("")
-                    .append(new TextComponent("- [ ").withStyle(borders))
+            this.header = Component.literal("")
+                    .append(Component.literal("- [ ").withStyle(borders))
                     .append(newText(title).withStyle(primary))
                     .append(" ] ")
                     .append(SEPARATOR.substring(ComponentText.clearFormatting(title).length() + 4))
                     .withStyle(borders);
-            this.text = new TextComponent("");
+            this.text = Component.literal("");
             this.primary = primary;
             this.secondary = secondary;
             this.borders = borders;
-            this.lineStarter = new TextComponent("- ").withStyle(ChatFormatting.DARK_GRAY);
-            this.valueObjectSeparator = new TextComponent(": ").withStyle(borders);
+            this.lineStarter = Component.literal("- ").withStyle(ChatFormatting.DARK_GRAY);
+            this.valueObjectSeparator = Component.literal(": ").withStyle(borders);
         }
 
         public static InfoBlockStyle of(String title) {
@@ -504,7 +483,7 @@ public class Texter {
                             .withStyle(typeFormat != null ? typeFormat.getDefaultFormatting() : this.secondary));
 
                     if (i != objects.size()) {
-                        text.append(new TextComponent(", ").withStyle(this.borders));
+                        text.append(Component.literal(", ").withStyle(this.borders));
                     }
                 }
             }
@@ -513,15 +492,15 @@ public class Texter {
         }
 
         public InfoBlockStyle append(String title, String[] subTitles, Object... objects) {
-            MutableComponent text = new TextComponent("");
+            MutableComponent text = Component.literal("");
             for (int i = 0; i < objects.length; i++) {
                 if (objects[i] instanceof Component) {
                     MutableComponent objectToText = (MutableComponent) objects[i];
                     text.append(objectToText);
                 } else if (objects[i] instanceof List<?>) {
                     List<?> list = (List<?>) objects[i];
-                    text.append(new TextComponent("[").withStyle(this.borders))
-                            .append(new TextComponent(this.valueObjectSeparator.getString()).withStyle(this.borders));
+                    text.append(Component.literal("[").withStyle(this.borders))
+                            .append(Component.literal(this.valueObjectSeparator.getString()).withStyle(this.borders));
 
                     for (int i1 = 0; i1 < list.size() && i1 < 6; i1++) {
                         text.append(String.valueOf(list.get(i1))).withStyle(this.secondary);
@@ -533,12 +512,12 @@ public class Texter {
                         }
                     }
 
-                    text.append(new TextComponent("]").withStyle(this.borders));
+                    text.append(Component.literal("]").withStyle(this.borders));
                 } else if (subTitles[i] != null) {
                     TypeFormat typeFormat = TypeFormat.getByClazz(objects[i].getClass());
 
-                    text.append(new TextComponent(subTitles[i]).withStyle(this.secondary))
-                            .append(new TextComponent(this.valueObjectSeparator.getString()).withStyle(this.borders))
+                    text.append(Component.literal(subTitles[i]).withStyle(this.secondary))
+                            .append(Component.literal(this.valueObjectSeparator.getString()).withStyle(this.borders))
                             .append(ComponentText.toText(String.valueOf(objects[i]))
                                     .withStyle(typeFormat != null ? typeFormat.getDefaultFormatting() : this.secondary)
                             );
@@ -579,7 +558,7 @@ public class Texter {
 
         public InfoBlockStyle appendRaw(Object obj) {
             TypeFormat typeFormat = TypeFormat.getByClazz(obj.getClass());
-            this.text.append(new TextComponent(String.valueOf(obj))
+            this.text.append(Component.literal(String.valueOf(obj))
                     .withStyle(typeFormat != null ? typeFormat.getDefaultFormatting() : this.secondary));
             return this;
         }
@@ -615,12 +594,12 @@ public class Texter {
             if (separateLine && this.useLineStarter)
                 this.text.append(this.lineStarter);
 
-            this.text.append(new TextComponent(title).withStyle(this.borders)).append(this.valueObjectSeparator).append(text);
+            this.text.append(Component.literal(title).withStyle(this.borders)).append(this.valueObjectSeparator).append(text);
             return this;
         }
 
         public MutableComponent build() {
-            return new TextComponent("").append(this.header).append(this.text.append("\n")).append(new TextComponent(SEPARATOR).withStyle(this.borders));
+            return Component.literal("").append(this.header).append(this.text.append("\n")).append(Component.literal(SEPARATOR).withStyle(this.borders));
         }
     }
 }

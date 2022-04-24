@@ -6,7 +6,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundContainerSetDataPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
@@ -74,7 +73,7 @@ public class InventoryCommand extends EssentialCommand {
             @Override
             public Component getDisplayName() {
                 Component text;
-                Component translatable = new TranslatableComponent("container.inventory");
+                Component translatable = Component.translatable("container.inventory");
 
                 if (src.equals(target)) {
                     text = Texter.newText().append(translatable).append(" ").append(target.getFormattedDisplayName());

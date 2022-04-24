@@ -3,7 +3,7 @@ package org.kilocraft.essentials.mixin.patch.technical;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.status.ClientboundStatusResponsePacket;
 import net.minecraft.network.protocol.status.ServerStatus;
 import org.kilocraft.essentials.api.KiloEssentials;
@@ -35,7 +35,7 @@ public abstract class ClientboundStatusResponsePacketMixin {
         // Configurable message of the day
         MotdConfigSection motdConfig = KiloConfig.main().motd();
         if (motdConfig.enabled) {
-            this.status.setDescription(ComponentText.toText(motdConfig.line1).append(new TextComponent("\n").append(ComponentText.toText(motdConfig.line2))));
+            this.status.setDescription(ComponentText.toText(motdConfig.line1).append(Component.literal("\n").append(ComponentText.toText(motdConfig.line2))));
         }
         final ServerStatus.Players players = this.status.getPlayers();
         if (players != null) {

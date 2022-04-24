@@ -9,6 +9,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import org.kilocraft.essentials.api.command.EssentialCommand;
 import org.kilocraft.essentials.chat.StringText;
 import org.kilocraft.essentials.util.CommandPermission;
@@ -21,7 +23,6 @@ import java.util.List;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 public class SettingCommand extends EssentialCommand {
@@ -79,7 +80,7 @@ public class SettingCommand extends EssentialCommand {
         String id = StringArgumentType.getString(ctx, "setting");
         Setting setting = ServerSettings.root.getSetting(id);
         if (!(setting instanceof ConfigurableSetting<?> configurableSetting))
-            throw new SimpleCommandExceptionType(new TextComponent("Invalid setting id: " + id)).create();
+            throw new SimpleCommandExceptionType(Component.literal("Invalid setting id: " + id)).create();
         configurableSetting.setValueFromCommand(ctx);
         Object value = configurableSetting.getValue();
         ServerPlayer player = ctx.getSource().getPlayerOrException();
@@ -97,7 +98,7 @@ public class SettingCommand extends EssentialCommand {
             player.displayClientMessage(StringText.of("command.setting.title", setting.getFullId().toUpperCase(), value), false);
             this.printRecursive(player, abstractSetting, 0);
         } else {
-            throw new SimpleCommandExceptionType(new TextComponent("Invalid setting id: " + id)).create();
+            throw new SimpleCommandExceptionType(Component.literal("Invalid setting id: " + id)).create();
         }
         return 1;
     }
@@ -110,7 +111,7 @@ public class SettingCommand extends EssentialCommand {
                 player.displayClientMessage(StringText.of("command.setting.more", preString, (setting.getChildren().size() - this.MAX_ENTRIES)), false);
                 return;
             }
-            TextComponent text = null;
+            MutableComponent text = null;
             if (child instanceof ConfigurableSetting<?> configurableSetting) {
                 text = StringText.of("command.setting.info", preString + child.getId(), configurableSetting.getFormattedValue());
             } else if (child instanceof CategorySetting) {

@@ -7,6 +7,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import net.minecraft.network.chat.Component;
 import org.kilocraft.essentials.api.KiloEssentials;
 import org.kilocraft.essentials.api.command.ArgumentSuggestions;
 import org.kilocraft.essentials.api.command.EssentialCommand;
@@ -29,7 +30,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
@@ -124,7 +124,7 @@ public class NicknameCommand extends EssentialCommand {
             user.clearNickname();
 
             if (user.isOnline())
-                ((OnlineUser) user).asPlayer().setCustomName(new TextComponent(""));
+                ((OnlineUser) user).asPlayer().setCustomName(Component.literal(""));
             else {
                 PlayerDataModifier dataModifier = new PlayerDataModifier(user.getUuid());
                 if (!dataModifier.load())

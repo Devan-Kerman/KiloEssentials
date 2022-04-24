@@ -51,15 +51,15 @@ public class TpaHereCommand extends EssentialCommand {
         src.sendMessage(
                 Texter.newText(ModConstants.translation("command.tpa.sent", target.getFormattedDisplayName()))
                         .append(" ")
-                        .append(ComponentUtils.wrapInSquareBrackets(Texter.getButton(" &c" + '\u00d7' + "&r ", "/tpcancel " + target.getUsername(), Texter.newText("&cCancel"))))
+                        .append(ComponentUtils.wrapInSquareBrackets(Texter.getButton(" <red>" + '\u00d7' + "<reset> ", "/tpcancel " + target.getUsername(), Texter.newText("<red>Cancel"))))
         );
 
         target.sendMessage(
                 Texter.newText(ModConstants.translation("command.tpa.receive.here", src.getFormattedDisplayName()))
                         .append(" ")
-                        .append(ComponentUtils.wrapInSquareBrackets(Texter.getButton(" &a" + '\u2714' + "&r ", "/tpaccept " + src.getUsername(), Texter.newText("&aClick to accept"))))
+                        .append(ComponentUtils.wrapInSquareBrackets(Texter.getButton(" <green>" + '\u2714' + "<reset> ", "/tpaccept " + src.getUsername(), Texter.newText("<green>Click to accept"))))
                         .append(" ")
-                        .append(ComponentUtils.wrapInSquareBrackets(Texter.getButton(" &c" + '\u00d7' + "&r ", "/tpdeny " + src.getUsername(), Texter.newText("&cClick to deny"))))
+                        .append(ComponentUtils.wrapInSquareBrackets(Texter.getButton(" <red>" + '\u00d7' + "<reset> ", "/tpdeny " + src.getUsername(), Texter.newText("<red>Click to deny"))))
         );
 
         if (target.getPreference(Preferences.SOUNDS)) {

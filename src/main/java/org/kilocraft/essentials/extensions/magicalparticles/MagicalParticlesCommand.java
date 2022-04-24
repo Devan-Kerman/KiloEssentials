@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.network.chat.Component;
 import org.kilocraft.essentials.api.KiloEssentials;
 import org.kilocraft.essentials.api.ModConstants;
 import org.kilocraft.essentials.api.command.EssentialCommand;
@@ -25,7 +26,6 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -94,18 +94,18 @@ public class MagicalParticlesCommand extends EssentialCommand {
         );
 
         text.append("&cdisable",
-                Texter.Events.onHover(new TextComponent("Click Here to Disable").withStyle(ChatFormatting.GOLD)
+                Texter.Events.onHover(Component.literal("Click Here to Disable").withStyle(ChatFormatting.GOLD)
                 ),
                 Texter.Events.onClickRun("/mp disable")
         ).append("&7|&r");
 
         map.forEach((id, animation) -> text.append(id.getPath(),
-                Texter.Events.onHover(new TextComponent("")
-                        .append(new TextComponent(animation.getName()).withStyle(ChatFormatting.GOLD))
+                Texter.Events.onHover(Component.literal("")
+                        .append(Component.literal(animation.getName()).withStyle(ChatFormatting.GOLD))
                         .append("\n")
-                        .append(new TextComponent(animation.getId().toString()).withStyle(ChatFormatting.DARK_GRAY))
+                        .append(Component.literal(animation.getId().toString()).withStyle(ChatFormatting.DARK_GRAY))
                         .append("\n")
-                        .append(new TextComponent(ModConstants.translation("general.click_apply")).withStyle(ChatFormatting.YELLOW))
+                        .append(Component.literal(ModConstants.translation("general.click_apply")).withStyle(ChatFormatting.YELLOW))
                 ),
                 Texter.Events.onClickRun("/mp set " + id + "--s")
         ));

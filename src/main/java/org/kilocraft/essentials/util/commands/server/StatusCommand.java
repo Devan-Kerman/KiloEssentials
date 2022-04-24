@@ -99,8 +99,8 @@ public class StatusCommand extends EssentialCommand {
             String msg = "An unexpected exception occurred when processing the cpu usage" +
                     "Please report this to a Administrator";
             sender.sendMessage(
-                    new net.minecraft.network.chat.TextComponent(msg + "\n Exception message:")
-                            .append(new net.minecraft.network.chat.TextComponent(e.getMessage()).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.RED));
+                    net.minecraft.network.chat.Component.literal(msg + "\n Exception message:")
+                            .append(net.minecraft.network.chat.Component.literal(e.getMessage()).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.RED));
 
             KiloEssentials.getLogger().error(msg, e);
         }

@@ -521,7 +521,7 @@ public class ServerUserManager implements UserManager, TickListener {
             try {
                 optionalUser.ifPresent(action);
             } catch (Exception e) {
-                requester.sendFailure(new net.minecraft.network.chat.TextComponent(e.getMessage()).withStyle(ChatFormatting.RED));
+                requester.sendFailure(net.minecraft.network.chat.Component.literal(e.getMessage()).withStyle(ChatFormatting.RED));
             }
         }, KiloEssentials.getMinecraftServer());
 

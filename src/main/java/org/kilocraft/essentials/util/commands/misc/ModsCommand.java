@@ -14,8 +14,8 @@ import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import org.kilocraft.essentials.api.ModConstants;
 import org.kilocraft.essentials.api.command.EssentialCommand;
 import org.kilocraft.essentials.util.text.Texter;
@@ -95,5 +95,5 @@ public class ModsCommand extends EssentialCommand {
                 .map(mod -> mod.getMetadata().getId()), builder);
     }
 
-    private final SimpleCommandExceptionType MOD_NOT_PRESENT = new SimpleCommandExceptionType(new TextComponent("Can't find a mod with that name/id!"));
+    private final SimpleCommandExceptionType MOD_NOT_PRESENT = new SimpleCommandExceptionType(Component.literal("Can't find a mod with that name/id!"));
 }

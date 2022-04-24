@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.SimpleMenuProvider;
@@ -28,7 +28,7 @@ public class WorkbenchCommand extends EssentialCommand {
     private static int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = context.getSource().getPlayerOrException();
 
-        player.openMenu(new SimpleMenuProvider(WorkbenchCommand::createContainer, new TranslatableComponent("container.crafting")));
+        player.openMenu(new SimpleMenuProvider(WorkbenchCommand::createContainer, Component.translatable("container.crafting")));
         player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
 
         return SUCCESS;

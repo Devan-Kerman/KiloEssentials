@@ -4,8 +4,8 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.cacheddata.CachedMetaData;
 import net.luckperms.api.query.QueryOptions;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.scores.PlayerTeam;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +27,7 @@ public class UserUtils {
         }
 
         return user.asPlayer().getTeam() == null ? Texter.newText(user.getFormattedDisplayName()) :
-                PlayerTeam.formatNameForTeam(user.asPlayer().getTeam(), new TextComponent(user.getFormattedDisplayName()));
+                PlayerTeam.formatNameForTeam(user.asPlayer().getTeam(), Component.literal(user.getFormattedDisplayName()));
     }
 
     public static String getDisplayNameWithMetaAsString(OnlineUser user, boolean nickName) {

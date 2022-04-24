@@ -3,6 +3,7 @@ package org.kilocraft.essentials.util.commands.moderation;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.network.chat.Component;
 import org.kilocraft.essentials.api.ModConstants;
 import org.kilocraft.essentials.api.command.ArgumentSuggestions;
 import org.kilocraft.essentials.api.command.EssentialCommand;
@@ -11,7 +12,6 @@ import org.kilocraft.essentials.util.CommandPermission;
 import java.util.Collection;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.selector.EntitySelector;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 import static net.minecraft.commands.arguments.EntityArgument.getPlayers;
@@ -47,7 +47,7 @@ public class ClearChatCommand extends EssentialCommand {
 
     private int executeMultiple(CommandContext<CommandSourceStack> ctx, Collection<ServerPlayer> targets, boolean silent) {
         for (ServerPlayer target : targets) {
-            this.getOnlineUser(target).sendMessage(new TextComponent(getClearString()));
+            this.getOnlineUser(target).sendMessage(Component.literal(getClearString()));
 
             this.getOnlineUser(target).sendLangMessage("command.clearchat.singleton", ctx.getSource().getTextName());
         }
