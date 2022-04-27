@@ -34,7 +34,7 @@ public abstract class ServerGamePacketListenerImplMixin {
             method = "onDisconnect",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/players/PlayerList;broadcastMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;Ljava/util/UUID;)V"
+                    target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;)V"
             ),
             index = 0
     )
@@ -46,11 +46,11 @@ public abstract class ServerGamePacketListenerImplMixin {
             method = "onDisconnect",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/players/PlayerList;broadcastMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;Ljava/util/UUID;)V"
+                    target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;)V"
             )
     )
-    public void shouldBroadCastLeave(PlayerList playerManager, Component message, ChatType type, UUID sender) {
-        if (!KiloEssentials.getUserManager().getOnline(this.player).getPreference(Preferences.VANISH)) playerManager.broadcastMessage(message, type, sender);
+    public void shouldBroadCastLeave(PlayerList playerManager, Component component, ChatType chatType) {
+        if (!KiloEssentials.getUserManager().getOnline(this.player).getPreference(Preferences.VANISH)) playerManager.broadcastSystemMessage(component, chatType);
     }
 
     @Inject(at = @At(value = "RETURN"), method = "onDisconnect")

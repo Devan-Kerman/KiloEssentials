@@ -99,7 +99,7 @@ public abstract class PlayerListMixin {
             method = "placeNewPlayer",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/players/PlayerList;broadcastMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;Ljava/util/UUID;)V"
+                    target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;)V"
             ),
             index = 0
     )
@@ -111,12 +111,12 @@ public abstract class PlayerListMixin {
             method = "placeNewPlayer",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/players/PlayerList;broadcastMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;Ljava/util/UUID;)V"
+                    target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;)V"
             )
     )
-    public void shouldBroadCastJoin(PlayerList playerManager, Component message, ChatType type, UUID sender, Connection connection, ServerPlayer player) {
+    public void shouldBroadCastJoin(PlayerList playerManager, Component component, ChatType chatType, Connection connection, ServerPlayer player) {
         if (!KiloEssentials.getUserManager().getOnline(player).getPreference(Preferences.VANISH))
-            playerManager.broadcastMessage(message, type, sender);
+            playerManager.broadcastSystemMessage(component, chatType);
     }
 
     @Inject(

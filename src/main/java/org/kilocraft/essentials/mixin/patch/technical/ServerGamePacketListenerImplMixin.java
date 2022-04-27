@@ -1,6 +1,7 @@
 package org.kilocraft.essentials.mixin.patch.technical;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ServerboundChatPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.network.TextFilter;
@@ -24,14 +25,13 @@ public abstract class ServerGamePacketListenerImplMixin {
     private float sentCharacters = 0;
 
     @Inject(
-            method = "handleChat(Lnet/minecraft/server/network/TextFilter$FilteredText;)V",
+            method = "handleChat(Lnet/minecraft/network/protocol/game/ServerboundChatPacket;Lnet/minecraft/server/network/TextFilter$FilteredText;)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/server/network/TextFilter$FilteredText;getFiltered()Ljava/lang/String;"
             ),
-            cancellable = true
-    )
-    public void onChatMessage(TextFilter.FilteredText message, CallbackInfo ci) {
+            cancellable = true)
+    public void onChatMessage(ServerboundChatPacket packet, TextFilter.FilteredText message, CallbackInfo ci) {
         final float KICK_THRESHOLD = 100;
         if (!KiloConfig.main().chat().useVanillaChat) {
             if (this.sentCharacters >= KICK_THRESHOLD && !KiloEssentials.hasPermissionNode(this.player.createCommandSourceStack(), EssentialPermission.CHAT_BYPASS_SPAM)) {

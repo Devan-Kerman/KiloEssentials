@@ -22,11 +22,11 @@ public abstract class CommandSourceStackMixin {
             method = "broadcastToAdmins",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/level/ServerPlayer;sendMessage(Lnet/minecraft/network/chat/Component;Ljava/util/UUID;)V"
+                    target = "Lnet/minecraft/server/level/ServerPlayer;sendSystemMessage(Lnet/minecraft/network/chat/Component;)V"
             )
     )
-    private void shouldBroadcastToOps(ServerPlayer playerEntity, Component message, UUID sender) {
-        if (this.server.getGameRules().getBoolean(ExtraGameRules.BROADCAST_ADMIN_COMMANDS)) playerEntity.sendMessage(message, sender);
+    private void shouldBroadcastToOps(ServerPlayer playerEntity, Component component) {
+        if (this.server.getGameRules().getBoolean(ExtraGameRules.BROADCAST_ADMIN_COMMANDS)) playerEntity.sendSystemMessage(component);
     }
 
 }

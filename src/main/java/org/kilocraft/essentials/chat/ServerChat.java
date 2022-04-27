@@ -198,7 +198,7 @@ public final class ServerChat {
                     if (mentionOnly && !mentioned && messageType == ChatType.CHAT) {
                         continue;
                     }
-                    user.asPlayer().sendMessage(message, messageType, author);
+                    user.asPlayer().sendUnsignedMessageFrom(message, author);
                 }
             }
         }
