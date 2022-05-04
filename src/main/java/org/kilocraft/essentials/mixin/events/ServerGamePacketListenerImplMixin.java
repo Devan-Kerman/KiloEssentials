@@ -1,5 +1,6 @@
 package org.kilocraft.essentials.mixin.events;
 
+import net.minecraft.resources.ResourceKey;
 import org.kilocraft.essentials.api.KiloEssentials;
 import org.kilocraft.essentials.api.ModConstants;
 import org.kilocraft.essentials.api.text.ComponentText;
@@ -34,7 +35,7 @@ public abstract class ServerGamePacketListenerImplMixin {
             method = "onDisconnect",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;)V"
+                    target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/resources/ResourceKey;)V"
             ),
             index = 0
     )
@@ -46,10 +47,10 @@ public abstract class ServerGamePacketListenerImplMixin {
             method = "onDisconnect",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;)V"
+                    target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/resources/ResourceKey;)V"
             )
     )
-    public void shouldBroadCastLeave(PlayerList playerManager, Component component, ChatType chatType) {
+    public void shouldBroadCastLeave(PlayerList playerManager, Component component, ResourceKey<ChatType> chatType) {
         if (!KiloEssentials.getUserManager().getOnline(this.player).getPreference(Preferences.VANISH)) playerManager.broadcastSystemMessage(component, chatType);
     }
 

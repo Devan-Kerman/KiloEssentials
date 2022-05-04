@@ -2,6 +2,7 @@ package org.kilocraft.essentials.chat;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.Nullable;
 import org.kilocraft.essentials.api.KiloEssentials;
 import org.kilocraft.essentials.api.ModConstants;
@@ -185,7 +186,7 @@ public final class ServerChat {
             return this.id;
         }
 
-        public void send(final Component message, final Set<UUID> pingedUsers, final Predicate<OnlineUser> shouldSend, final ChatType messageType, final UUID author) {
+        public void send(final Component message, final Set<UUID> pingedUsers, final Predicate<OnlineUser> shouldSend, final ResourceKey<ChatType> messageType, final UUID author) {
             final boolean playSound = KiloConfig.main().chat().ping().pingSound().enabled;
             for (OnlineUser user : KiloEssentials.getUserManager().getOnlineUsersAsList()) {
                 if (!shouldSend.test(user)) continue;
@@ -195,15 +196,16 @@ public final class ServerChat {
                         ServerChat.pingUser(user, MentionTypes.PUBLIC);
                     }
                     final boolean mentionOnly = user.getPreference(Preferences.CHAT_VISIBILITY) == VisibilityPreference.MENTIONS;
-                    if (mentionOnly && !mentioned && messageType == ChatType.CHAT) {
+                    if (mentionOnly && !mentioned && messageType == ChatType.SYSTEM) {
                         continue;
                     }
-                    user.asPlayer().sendUnsignedMessageFrom(message, author);
+                    // TODO: Implement message signing
+                    user.asPlayer().sendSystemMessage(message, messageType);
                 }
             }
         }
 
-        public void send(Component message, ChatType messageType, UUID uuid) {
+        public void send(Component message, ResourceKey<ChatType> messageType, UUID uuid) {
             this.send(message, new HashSet<>(), (user) -> true, messageType, uuid);
         }
 

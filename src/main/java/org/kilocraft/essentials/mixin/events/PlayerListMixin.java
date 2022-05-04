@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.IpBanList;
@@ -99,7 +100,7 @@ public abstract class PlayerListMixin {
             method = "placeNewPlayer",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;)V"
+                    target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/resources/ResourceKey;)V"
             ),
             index = 0
     )
@@ -111,10 +112,10 @@ public abstract class PlayerListMixin {
             method = "placeNewPlayer",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/ChatType;)V"
+                    target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/resources/ResourceKey;)V"
             )
     )
-    public void shouldBroadCastJoin(PlayerList playerManager, Component component, ChatType chatType, Connection connection, ServerPlayer player) {
+    public void shouldBroadCastJoin(PlayerList playerManager, Component component, ResourceKey<ChatType> chatType, Connection connection, ServerPlayer player) {
         if (!KiloEssentials.getUserManager().getOnline(player).getPreference(Preferences.VANISH))
             playerManager.broadcastSystemMessage(component, chatType);
     }

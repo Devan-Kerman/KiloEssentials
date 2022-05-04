@@ -189,11 +189,11 @@ public class ChatMessage {
         if (this.shouldCensor) {
             net.minecraft.network.chat.Component censored = ComponentText.toText(this.censored.build());
             // Send the censored message to everyone, but the sender
-            this.channel.send(censored, this.pinged, IS_SENDER.negate(), ChatType.CHAT, this.sender.getUuid());
+            this.channel.send(censored, this.pinged, IS_SENDER.negate(), ChatType.SYSTEM, this.sender.getUuid());
             // Send the uncensored message to the sender
-            this.channel.send(text, this.pinged, IS_SENDER, ChatType.CHAT, this.sender.getUuid());
+            this.channel.send(text, this.pinged, IS_SENDER, ChatType.SYSTEM, this.sender.getUuid());
         } else {
-            this.channel.send(text, this.pinged, (user) -> true, ChatType.CHAT, this.sender.getUuid());
+            this.channel.send(text, this.pinged, (user) -> true, ChatType.SYSTEM, this.sender.getUuid());
         }
         if (!this.flagged.isEmpty()) ChatEvents.FLAGGED_MESSAGE.invoker().onMessageFlag(this.sender, this.input, this.flagged);
         KiloChat.broadCastToConsole(text.getString());
