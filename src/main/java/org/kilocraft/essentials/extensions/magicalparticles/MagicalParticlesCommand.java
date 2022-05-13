@@ -61,13 +61,7 @@ public class MagicalParticlesCommand extends EssentialCommand {
     private int set(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
         OnlineUser user = this.getOnlineUser(ctx);
-        boolean silent = false;
         ResourceLocation identifier = getId(ctx, "animation");
-
-        if (identifier.getPath().endsWith("--s")) {
-            silent = true;
-            identifier = new ResourceLocation(identifier.toString().replaceFirst("--s", ""));
-        }
 
         if (!isValidId(identifier)) {
             identifier = getIdFromPath(identifier.getPath());
@@ -83,7 +77,7 @@ public class MagicalParticlesCommand extends EssentialCommand {
         }
 
         addPlayer(player.getUUID(), identifier);
-        player.displayClientMessage(StringText.of("command.magicalparticles.set", getAnimationName(identifier)), silent);
+        player.sendSystemMessage(StringText.of("command.magicalparticles.set", getAnimationName(identifier)));
         return SUCCESS;
     }
 

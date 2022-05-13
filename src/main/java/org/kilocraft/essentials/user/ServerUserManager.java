@@ -439,15 +439,6 @@ public class ServerUserManager implements UserManager, TickListener {
         this.onlineUsers.remove(player.getUUID());
     }
 
-    public void onChatMessage(ServerPlayer player, TextFilter.FilteredText textStream) {
-        OnlineUser user = this.getOnline(player);
-        if (this.mutedPlayerList.isMuted(user.asPlayer().getGameProfile())) {
-            user.sendMessage(getMuteMessage(user));
-        } else {
-            ServerChat.sendChatMessage(user, Format.validatePermission(user, textStream.getRaw(), EssentialPermission.PERMISSION_PREFIX + "chat.formatting"), user.getPreference(Preferences.CHAT_CHANNEL));
-        }
-    }
-
     @Override
     public void onTick() {
         for (OnlineUser user : this.users) {

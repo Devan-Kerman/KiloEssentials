@@ -34,10 +34,10 @@ public class DiscordFabModule implements DiscordFabAPI {
 
     private static boolean handleDiscordMessage(String minecraftChannelId, String name, UUID sender, String message) {
         if (minecraftChannelId.equals(STAFF_CHANNEL_ID)) {
-            ServerChat.Channel.STAFF.send(ComponentText.toText(ModConstants.translation("compability.discordfab.chat.staff", name, message)), ChatType.CHAT, sender);
+            ServerChat.Channel.STAFF.send(ComponentText.toText(ModConstants.translation("compability.discordfab.chat.staff", name, message)), ChatType.SYSTEM, sender);
             return true;
         } else if (minecraftChannelId.equals(DiscordFabMod.PUBLIC_CHANNEL_ID)){
-            ServerChat.Channel.PUBLIC.send(ComponentText.toText(ModConstants.translation("compability.discordfab.chat.public", name, message)), ChatType.CHAT, sender);
+            ServerChat.Channel.PUBLIC.send(ComponentText.toText(ModConstants.translation("compability.discordfab.chat.public", name, message)), ChatType.SYSTEM, sender);
             return true;
         } else {
             // If we return true, discordfab will see this message as handled and won't send it to minecraft

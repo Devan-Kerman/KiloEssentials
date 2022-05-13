@@ -107,7 +107,7 @@ public class OnlineServerUser extends ServerUser implements OnlineUser {
 
     @Override
     public void sendMessage(final net.minecraft.network.chat.Component text) {
-        this.asPlayer().displayClientMessage(text, true);
+        this.asPlayer().sendSystemMessage(text);
     }
 
     @Override
