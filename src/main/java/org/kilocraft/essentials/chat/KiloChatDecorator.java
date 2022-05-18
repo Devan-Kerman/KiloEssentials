@@ -21,6 +21,7 @@ import org.kilocraft.essentials.api.user.OnlineUser;
 import org.kilocraft.essentials.util.EssentialPermission;
 import org.kilocraft.essentials.util.registry.RegistryUtils;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,10 +34,11 @@ public class KiloChatDecorator implements ChatDecorator {
     private static final String EVERYONE_REGEX = "@everyone";
     private static final String HEART_REGEX = "(<3)|♥";
 
+    // TODO: Why is it CompletableFuture<Component> now
     @Override
-    public Component decorate(@Nullable ServerPlayer serverPlayer, @NotNull Component component) {
-        if (serverPlayer == null) return component;
-        return ComponentText.toText(this.parse(serverPlayer, component.getString().trim()));
+    public CompletableFuture<Component> decorate(@Nullable ServerPlayer serverPlayer, @NotNull Component component) {
+        if (serverPlayer == null) return CompletableFuture.completedFuture(component);
+        return CompletableFuture.completedFuture(ComponentText.toText(this.parse(serverPlayer, component.getString().trim())));
     }
 
 

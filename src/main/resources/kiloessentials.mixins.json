@@ -26,7 +26,6 @@
     "technical.CommandSourceStackMixin",
     "technical.ConnectionMixin",
     "technical.CraftingMenuMixin",
-    "technical.DedicatedServerMixin",
     "technical.EndPortalBlockMixin",
     "technical.EntityMixin",
     "technical.EntitySelectorOptionsMixin",
