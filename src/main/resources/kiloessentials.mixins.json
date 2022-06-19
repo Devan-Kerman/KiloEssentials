@@ -8,6 +8,7 @@
     "bugfix.ChunkGeneratorMixin",
     "bugfix.EntityMixin",
     "bugfix.PistonBaseBlockMixin",
+    "bugfix.PlayerListMixin",
     "bugfix.ServerGamePacketListenerImplMixin",
     "bugfix.ServerPlayerMixin",
     "gameplay.DyeItemMixin",

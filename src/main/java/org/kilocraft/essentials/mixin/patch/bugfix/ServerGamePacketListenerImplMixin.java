@@ -9,12 +9,17 @@ import org.kilocraft.essentials.mixin.accessor.ShulkerBoxMenuAccessor;
 import org.kilocraft.essentials.patch.ChunkManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerGamePacketListenerImpl.class)
 public abstract class ServerGamePacketListenerImplMixin {
+
+    @Unique
+    private boolean loggedIn = false;
 
     @Shadow
     public ServerPlayer player;
@@ -33,4 +38,18 @@ public abstract class ServerGamePacketListenerImplMixin {
             }
         }
     }
+
+    /**
+     * Loads chunks asynchronously without blocking the main thread.
+     */
+    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;doTick()V"))
+    private void loadLoginChunksAsync(ServerPlayer serverPlayer) {
+        if (this.loggedIn) {
+            serverPlayer.doTick();
+        } else if (ChunkManager.isChunkLoaded(serverPlayer.level, serverPlayer.blockPosition())) {
+            this.loggedIn = true;
+            serverPlayer.doTick();
+        }
+    }
+
 }

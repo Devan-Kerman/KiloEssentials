@@ -159,7 +159,7 @@ public class SethomeCommand extends EssentialCommand {
                         .append(Component.literal("Click here to Confirm").withStyle(ChatFormatting.GREEN))
                         .append(Component.literal("]").withStyle(ChatFormatting.GRAY))
                         .withStyle((style) -> {
-                            return style.applyFormat(ChatFormatting.GRAY).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Confirm").withStyle(ChatFormatting.YELLOW))).withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sethome -confirmed-" + homeName + " " + user));
+                            return style.applyFormat(ChatFormatting.GRAY).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Confirm").withStyle(ChatFormatting.YELLOW))).withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/sethome -confirmed-" + homeName + (user.equals("") ? "" : " " + user)));
                         }));
     }
 
