@@ -5,6 +5,8 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.datafixers.util.Unit;
+import com.mojang.realmsclient.util.task.OpenServerTask;
 import org.jetbrains.annotations.Nullable;
 import org.kilocraft.essentials.api.KiloEssentials;
 import org.kilocraft.essentials.api.command.ArgumentSuggestions;
@@ -32,7 +34,9 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.network.Connection;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
@@ -90,8 +94,8 @@ public class RtpCommand extends EssentialCommand {
             ServerPlayer target = targetUser.asPlayer();
             targetUser.sendLangMessage("command.rtp.loading");
             // Add a custom ticket to gradually preload chunks
-            targetWorld.getChunkSource().addRegionTicket(TicketType.create("rtp", Integer::compareTo, 300), new ChunkPos(blockPos), 1, target.getId()); // Lag reduction
-            this.teleport(src, targetUser, targetWorld, blockPos.mutable(), 0);
+            //targetWorld.getChunkSource().addRegionTicket(TicketType.create("rtp", Integer::compareTo, 300), new ChunkPos(blockPos), 1, target.getId()); // Lag reduction
+            this.teleport(src, targetUser, targetWorld, blockPos.mutable(), 0, target.getId());
         } else {
             targetUser.sendLangMessage("command.rtp.failed.invalid_biome");
         }
@@ -124,36 +128,38 @@ public class RtpCommand extends EssentialCommand {
         }
         return null;
     }
-
-    private void teleport(final CommandSourceStack src, final OnlineUser targetUser, final ServerLevel world, final BlockPos.MutableBlockPos pos, int attempts) {
+    
+    private static final TicketType<Integer> ASYNC_TELEPORT = TicketType.create("rtp", Integer::compareTo, 300);
+    
+    private void teleport(final CommandSourceStack src, final OnlineUser targetUser, final ServerLevel world, final BlockPos.MutableBlockPos pos, int attempts, int id) {
         // Check every ~4 ticks
-        AbstractScheduler.start(175, () -> {
-            final ChunkAccess chunk = ChunkManager.getChunkIfLoaded(world, pos);
-            if (chunk == null) {
-                if (attempts > 70) {
-                    targetUser.sendLangMessage("command.rtp.failed.too_slow");
-                } else {
-                    this.teleport(src, targetUser, world, pos, attempts + 1);
-                }
-            } else {
-                try {
-                    ServerPlayer target = targetUser.asPlayer();
-                    if (target != null) {
-                        pos.setY(this.getY(world, pos.getX(), world.getMaxBuildHeight(), pos.getZ()));
-                        target.teleportTo(world, pos.getX(), pos.getY(), pos.getZ(), target.getYRot(), target.getXRot());
-                        if (!PERMISSION_CHECK_IGNORE_LIMIT.test(src)) {
-                            targetUser.getPreferences().set(RTP_LEFT, targetUser.getPreference(RTP_LEFT) - 1);
-                        }
-                        Biome biome = world.getBiome(pos).value();
-                        final ResourceLocation identifier = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome);
-                        assert identifier != null;
-                        targetUser.sendLangMessage("command.rtp.success", identifier.getPath(), pos.getX(), pos.getY(), pos.getZ(), RegistryUtils.dimensionToName(world.dimension()));
-                    }
-                } catch (InsecureDestinationException e) {
-                    targetUser.sendLangMessage("command.rtp.failed.unsafe");
-                }
+        ChunkManager.asyncChunkLoad(ASYNC_TELEPORT, world, new ChunkPos(pos), id).whenCompleteAsync((either, throwable) -> {
+            if (throwable != null) {
+                targetUser.sendLangMessage("command.rtp.err", throwable);
+                return;
             }
-        });
+            Connection connection = targetUser.getConnection();
+            if (connection == null || !connection.isConnected()) {
+                return;
+            }
+    
+            try {
+                ServerPlayer target = targetUser.asPlayer();
+                if (target != null) {
+                    pos.setY(this.getY(world, pos.getX(), world.getMaxBuildHeight(), pos.getZ()));
+                    target.teleportTo(world, pos.getX(), pos.getY(), pos.getZ(), target.getYRot(), target.getXRot());
+                    if (!PERMISSION_CHECK_IGNORE_LIMIT.test(src)) {
+                        targetUser.getPreferences().set(RTP_LEFT, targetUser.getPreference(RTP_LEFT) - 1);
+                    }
+                    Biome biome = world.getBiome(pos).value();
+                    final ResourceLocation identifier = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome);
+                    assert identifier != null;
+                    targetUser.sendLangMessage("command.rtp.success", identifier.getPath(), pos.getX(), pos.getY(), pos.getZ(), RegistryUtils.dimensionToName(world.dimension()));
+                }
+            } catch (InsecureDestinationException e) {
+                targetUser.sendLangMessage("command.rtp.failed.unsafe");
+            }
+        }, runnable -> world.getServer().tell(new TickTask(0, runnable)));
     }
 
     private int getY(BlockGetter blockView, int x, int maxY, int z) throws InsecureDestinationException {

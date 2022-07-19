@@ -14,6 +14,8 @@ public interface ServerChunkCacheAccessor {
     DistanceManager getDistanceManager();
 
     @Invoker("getVisibleChunkIfPresent")
-    ChunkHolder getVisibleChunkIfPresent(long pos);
-
+    ChunkHolder callGetVisibleChunkIfPresent(long pos);
+    
+    @Invoker
+    boolean callRunDistanceManagerUpdates();
 }

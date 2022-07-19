@@ -1,10 +1,13 @@
 package org.kilocraft.essentials.patch;
 
+import java.util.concurrent.CompletableFuture;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.DistanceManager;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -12,6 +15,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
+
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Unit;
 import org.kilocraft.essentials.mixin.accessor.ServerChunkCacheAccessor;
 
 public final class ChunkManager {
@@ -80,7 +86,7 @@ public final class ChunkManager {
     }
 
     public static ChunkHolder getChunkHolder(ServerChunkCache manager, int x, int z) {
-        return ((ServerChunkCacheAccessor) manager).getVisibleChunkIfPresent(ChunkPos.asLong(x, z));
+        return ((ServerChunkCacheAccessor) manager).callGetVisibleChunkIfPresent(ChunkPos.asLong(x, z));
     }
 
     /**
@@ -93,5 +99,19 @@ public final class ChunkManager {
 
     public static DistanceManager getTicketManager(ServerChunkCache manager) {
         return ((ServerChunkCacheAccessor) manager).getDistanceManager();
+    }
+    
+    public static <T> CompletableFuture<Either<LevelChunk, ChunkHolder.ChunkLoadingFailure>> asyncChunkLoad(TicketType<T> ticket, ServerLevel level, ChunkPos pos, T instance) {
+        final ServerChunkCache chunkManager = level.getChunkSource();
+        final DistanceManager manager = getTicketManager(level);
+        manager.addRegionTicket(ticket, pos, 3, instance);
+        ((ServerChunkCacheAccessor) chunkManager).callRunDistanceManagerUpdates();
+        final ChunkHolder chunkHolder = getChunkHolder(chunkManager, pos.x, pos.z);
+        if (chunkHolder == null) {
+            throw new IllegalStateException("Chunk not there when requested");
+        }
+        final CompletableFuture<Either<LevelChunk, ChunkHolder.ChunkLoadingFailure>> future = chunkHolder.getEntityTickingChunkFuture();
+        future.whenCompleteAsync((unused, throwable) -> manager.removeRegionTicket(ticket, pos, 3, instance), level.getServer());
+        return future;
     }
 }
