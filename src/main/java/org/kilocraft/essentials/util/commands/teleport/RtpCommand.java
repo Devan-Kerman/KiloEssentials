@@ -96,7 +96,6 @@ public class RtpCommand extends EssentialCommand {
             ServerPlayer target = targetUser.asPlayer();
             targetUser.sendLangMessage("command.rtp.loading");
             // Add a custom ticket to gradually preload chunks
-            //targetWorld.getChunkSource().addRegionTicket(TicketType.create("rtp", Integer::compareTo, 300), new ChunkPos(blockPos), 1, target.getId()); // Lag reduction
             this.teleport(src, targetUser, targetWorld, blockPos.mutable(), 0, target.getId());
         } else {
             targetUser.sendLangMessage("command.rtp.failed.invalid_biome");
@@ -134,7 +133,6 @@ public class RtpCommand extends EssentialCommand {
     private static final TicketType<Integer> ASYNC_TELEPORT = TicketType.create("rtp", Integer::compareTo, 300);
     
     private void teleport(final CommandSourceStack src, final OnlineUser targetUser, final ServerLevel world, final BlockPos.MutableBlockPos pos, int attempts, int id) {
-        // Check every ~4 ticks
         ChunkManager.asyncChunkLoad(ASYNC_TELEPORT, world, new ChunkPos(pos), id).whenCompleteAsync((either, throwable) -> {
             if (throwable != null) {
                 targetUser.sendLangMessage("command.rtp.err", throwable);
