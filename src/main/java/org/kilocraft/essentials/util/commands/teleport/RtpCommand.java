@@ -26,6 +26,7 @@ import org.kilocraft.essentials.util.commands.KiloCommands;
 import org.kilocraft.essentials.util.registry.RegistryUtils;
 import org.kilocraft.essentials.util.text.Texter;
 
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Predicate;
 import net.minecraft.commands.CommandSourceStack;
@@ -37,6 +38,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.Connection;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
@@ -137,7 +139,14 @@ public class RtpCommand extends EssentialCommand {
             if (throwable != null) {
                 targetUser.sendLangMessage("command.rtp.err", throwable);
                 return;
+            } else {
+                Optional<ChunkHolder.ChunkLoadingFailure> right = either.right();
+                if(right.isPresent()) {
+                    targetUser.sendLangMessage("command.rtp.err", right.get());
+                    return;
+                }
             }
+            
             Connection connection = targetUser.getConnection();
             if (connection == null || !connection.isConnected()) {
                 return;
